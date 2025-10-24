@@ -1,5 +1,6 @@
 using Game.Playground.PlayerCharacter.Movement.Data;
 using Unity.Netcode;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace Game.Playground.PlayerCharacter.Movement
@@ -27,9 +28,9 @@ namespace Game.Playground.PlayerCharacter.Movement
                 return;
             if (!IsOwner)
                 return;
-
+/*
             Debug.Log($"Direction Input: {a_directionInput} | Old direction input : {DirectionInput}");
-
+*/
             m_directionInput.Value = a_directionInput;
         }
 
@@ -54,8 +55,7 @@ namespace Game.Playground.PlayerCharacter.Movement
 
                 var newVelocity = m_directionInput.Value.normalized * newVelocitySpeed;
                 m_currentVelocity.Value = newVelocity;
-
-                m_rigidbody.transform.forward = m_directionInput.Value.normalized;
+                
             }
             else
             {
