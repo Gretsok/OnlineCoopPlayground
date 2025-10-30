@@ -2,7 +2,7 @@ using Tools.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Animation
+namespace Game.Gameplay.PlayerCharacter.Animation
 {
     public class PlayerCharacterGameDataRetrieverAndInjector : NetworkBehaviour
     {

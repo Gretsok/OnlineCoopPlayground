@@ -1,6 +1,7 @@
+using Game.Gameplay.PlayerCharacter.Movement;
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Movement.Editor
+namespace Game.Gameplay.PlayerCharacter.Movement.Editor
 {
     [UnityEditor.CustomEditor(typeof(PlayerCharacterMovementController))]
     public class PlayerCharacterMovementControllerEditor : UnityEditor.Editor

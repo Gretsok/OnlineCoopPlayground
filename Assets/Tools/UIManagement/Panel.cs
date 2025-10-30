@@ -46,5 +46,13 @@ namespace Tools.UIManagement
             OnHidden?.Invoke(this);
             m_onHidden?.Invoke();
         }
+
+        public void Toggle()
+        {
+            if (IsShown)
+                Hide();
+            else
+                Show();
+        }
     }
 }

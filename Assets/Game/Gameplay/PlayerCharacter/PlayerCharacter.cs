@@ -1,8 +1,9 @@
-using Game.Playground.PlayerCharacter.Movement;
+using Game.Gameplay.Controls;
+using Game.Gameplay.PlayerCharacter.Movement;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter
+namespace Game.Gameplay.PlayerCharacter
 {
     public class PlayerCharacter : NetworkBehaviour, 
         IPlayerCharacterMovementControllerHolder, 

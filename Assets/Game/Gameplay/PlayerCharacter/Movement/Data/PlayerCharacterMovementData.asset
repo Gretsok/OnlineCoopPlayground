@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ea27a157fb1844eafb9f52088d48b4, type: 3}
   m_Name: PlayerCharacterMovementData
   m_EditorClassIdentifier: Assembly-CSharp::Game.Playground.PlayerCharacter.Movement.Data.MovementDataAsset
-  <MaxMovementSpeed>k__BackingField: 6.5
+  <MaxMovementSpeed>k__BackingField: 5
   <MaxSpeedFactorAccordingToInput>k__BackingField:
     serializedVersion: 2
     m_Curve:
@@ -37,6 +37,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  <Acceleration>k__BackingField: 20
-  <Deceleration>k__BackingField: 15
+  <Acceleration>k__BackingField: 8
+  <Deceleration>k__BackingField: 10
   <GravityAcceleration>k__BackingField: 15

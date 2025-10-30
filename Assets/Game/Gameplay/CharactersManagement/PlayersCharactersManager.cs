@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Game.Playground.CharactersManagement
+namespace Game.Gameplay.CharactersManagement
 {
     public class PlayersCharactersManager : NetworkBehaviour
     {
@@ -62,6 +62,9 @@ namespace Game.Playground.CharactersManagement
     
         private void HandleClientDisconnected(ulong a_clientID)
         {
+            if (!m_networkManager.IsListening && !m_networkManager.IsConnectedClient)
+                return;
+            
             Debug.Log($"[PlayersCharactersManager] OnClientDisconnected : Client ID {a_clientID} disconnected");
 
             if (!m_characters.ContainsKey(a_clientID))
@@ -70,7 +73,29 @@ namespace Game.Playground.CharactersManagement
             Debug.Log($"[PlayersCharactersManager] Removing character with Client ID {a_clientID}");
 
             var character = m_characters[a_clientID];
-            character.NetworkObject.Despawn();
+            character?.NetworkObject?.Despawn();
+        }
+
+        public override void OnNetworkPreDespawn()
+        {
+            base.OnNetworkPreDespawn();
+            if (!IsServer)
+                return;
+
+            m_networkManager.OnClientConnectedCallback -= HandleClientConnected;
+            m_networkManager.OnClientDisconnectCallback -= HandleClientDisconnected;
+            
+            var enumerator = m_characters.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var kvp = enumerator.Current;
+                if (kvp.Value.NetworkObject.IsSpawned)
+                    kvp.Value.NetworkObject.Despawn();
+                else
+                    Destroy(kvp.Value.NetworkObject.gameObject);
+            }
+            
+            m_characters.Clear();
         }
     }
 }

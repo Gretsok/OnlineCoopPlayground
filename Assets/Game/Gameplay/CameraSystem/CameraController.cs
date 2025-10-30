@@ -1,8 +1,9 @@
 using System;
+using Game.Gameplay.Controls;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Game.Playground.CameraSystem
+namespace Game.Gameplay.CameraSystem
 {
     public class CameraController : MonoBehaviour
     {

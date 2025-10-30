@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Movement
+namespace Game.Gameplay.PlayerCharacter.Movement
 {
     public interface IRigidbodyHolder
     {

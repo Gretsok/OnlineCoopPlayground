@@ -207,6 +207,45 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Lobby",
+            "id": "de8f57d7-7cda-4d84-8a31-0ac7e48decf8",
+            "actions": [
+                {
+                    "name": "ToggleLobbyMenu",
+                    "type": "Button",
+                    "id": "c6a42719-2cd0-44ac-8ea7-7b2c6f4f6db4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0d496cce-75f0-4f3e-9d1d-cedcb514874a",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleLobbyMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3108fea-ab40-450a-8226-344eb0b165d4",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleLobbyMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

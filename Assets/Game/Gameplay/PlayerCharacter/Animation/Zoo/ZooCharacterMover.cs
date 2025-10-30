@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Animation.Editor
+namespace Game.Gameplay.PlayerCharacter.Animation.Editor
 {
     public class ZooCharacterMover : MonoBehaviour
     {

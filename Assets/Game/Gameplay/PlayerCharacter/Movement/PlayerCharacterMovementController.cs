@@ -1,9 +1,8 @@
-using Game.Playground.PlayerCharacter.Movement.Data;
+using Game.Gameplay.PlayerCharacter.Movement.Data;
 using Unity.Netcode;
-using UnityEditor.Rendering;
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Movement
+namespace Game.Gameplay.PlayerCharacter.Movement
 {
     public class PlayerCharacterMovementController : NetworkBehaviour
     {

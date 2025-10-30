@@ -14,7 +14,7 @@ namespace Game.MainMenu.Orchestration.Connecting
 
             if (networkManager.IsServer)
             {
-                networkManager.SceneManager.LoadScene("PlaygroundScene", LoadSceneMode.Single);
+                networkManager.SceneManager.LoadScene("LobbyScene", LoadSceneMode.Single);
             }
         }
     }

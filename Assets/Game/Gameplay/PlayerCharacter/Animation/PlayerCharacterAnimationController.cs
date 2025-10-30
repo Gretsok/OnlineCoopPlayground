@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Playground.PlayerCharacter.Animation
+namespace Game.Gameplay.PlayerCharacter.Animation
 {
     public class PlayerCharacterAnimationController : MonoBehaviour
     {

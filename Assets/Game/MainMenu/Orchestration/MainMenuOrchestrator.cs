@@ -22,11 +22,24 @@ namespace Game.MainMenu.Orchestration
 
         [Header("States")]
         [SerializeField]
+        private OrchestrationState m_rootineState;
+        [SerializeField]
         private OrchestrationState m_connectionScreenState;
         [SerializeField]
         private OrchestrationState m_disconnectionHandlingScreenState;
         [SerializeField]
         private OrchestrationState m_connectingScreenState;
+
+        public void GoToRootineState()
+        {
+            if (!m_rootineState)
+            {
+                Debug.LogError($"Cannot go to routine screen. No touine screen state available.");
+                return;
+            }
+            
+            m_orchestrationStateMachine.SetNextState(m_rootineState);
+        }
         
         public void GoToConnectionScreen()
         {
