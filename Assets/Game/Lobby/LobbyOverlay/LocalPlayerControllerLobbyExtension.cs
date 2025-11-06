@@ -18,6 +18,8 @@ namespace Game.Lobby.LobbyOverlay
 
         private void OnDestroy()
         {
+            m_localPlayerController.Actions.Lobby.ToggleLobbyMenu.started -= HandleToggleLobbyMenuStarted;
+
             m_localPlayerController.OnInputActionsInitialized -= HandleInputActionsInitialized;
         }
 

@@ -92,7 +92,7 @@ namespace Game.Lobby
             }
         }
 
-        public async void LeaveLobby()
+        public void LeaveLobby()
         {
             try
             {

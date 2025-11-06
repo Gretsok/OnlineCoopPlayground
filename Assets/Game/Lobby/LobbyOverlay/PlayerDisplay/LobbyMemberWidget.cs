@@ -1,10 +1,11 @@
+using Game.Lobby.LobbyOverlay.PlayerDisplay.PlayersContextActions;
 using Game.SteamIntegration;
 using Steamworks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.MainMenu.Orchestration.SteamLobby.PlayerDisplay
+namespace Game.Lobby.LobbyOverlay.PlayerDisplay
 {
     public class LobbyMemberWidget : MonoBehaviour
     {
@@ -12,13 +13,15 @@ namespace Game.MainMenu.Orchestration.SteamLobby.PlayerDisplay
         private RawImage m_avatarImage;
         [SerializeField]
         private TMP_Text m_nameText;
-
+        [SerializeField]
+        private ContextActionsForAPlayerPopUp m_contextActionWidgetsPopUp;
         public Friend InflatedLobbyMember { get; private set; }
-        
+
         public void InflateMember(Friend a_lobbyMember)
         {
             InflatedLobbyMember = a_lobbyMember;
             m_nameText.text = a_lobbyMember.Name;
+            m_contextActionWidgetsPopUp.SetAssociatedLobbyMember(a_lobbyMember);
             LoadingAndInflatingAvatarFor(a_lobbyMember);
         }
 

@@ -49,7 +49,8 @@ namespace Game.Lobby.LobbyOverlay.MainActionsSection
         
         private void HandleOpenFriendListButtonClicked()
         {
-            SteamFriends.OpenOverlay("Friends");
+            //SteamFriends.OpenOverlay("Friends");
+            SteamFriends.OpenGameInviteOverlay(LobbyManager.Instance.Lobby.Id);
         }
         
         private void HandleLeaveLobbyButtonClicked()

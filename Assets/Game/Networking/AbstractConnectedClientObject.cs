@@ -1,16 +1,22 @@
-using UnityEngine;
+using Steamworks;
+using Unity.Netcode;
 
-public class AbstractConnectedClientObject : MonoBehaviour
+namespace Game.Networking
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class AbstractConnectedClientObject : NetworkBehaviour
     {
-        
-    }
+        public readonly NetworkVariable<SteamId> SteamId = new NetworkVariable<SteamId>(writePerm: NetworkVariableWritePermission.Owner);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        protected override void OnNetworkPostSpawn()
+        {
+            base.OnNetworkPostSpawn();
+            SteamId.Value = SteamClient.SteamId;
+        }
+
+        public override void OnGainedOwnership()
+        {
+            base.OnGainedOwnership();
+            SteamId.Value = SteamClient.SteamId;;
+        }
     }
 }

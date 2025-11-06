@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using Game.Lobby;
 using Steamworks;
 using UnityEngine;
 
-namespace Game.MainMenu.Orchestration.SteamLobby.PlayerDisplay
+namespace Game.Lobby.LobbyOverlay.PlayerDisplay
 {
     public class LobbyMembersWidgetsHandler : MonoBehaviour
     {
@@ -14,6 +12,7 @@ namespace Game.MainMenu.Orchestration.SteamLobby.PlayerDisplay
         private LobbyManager m_lobbyManager;
         
         private readonly List<LobbyMemberWidget> m_lobbyMemberWidgets = new();
+        public IReadOnlyList<LobbyMemberWidget> LobbyMemberWidgets => m_lobbyMemberWidgets;
 
         private void Start()
         {
