@@ -63,8 +63,16 @@ namespace Game.Lobby
                 }
                 
                 var lobbyRequest = await SteamMatchmaking.CreateLobbyAsync(4);
-                Lobby = lobbyRequest.GetValueOrDefault();
-                IsInLobby = true;
+                if (lobbyRequest.HasValue)
+                {
+                    Debug.Log($"Lobby \"{lobbyRequest.Value.Id}\" created.");
+                    Lobby = lobbyRequest.GetValueOrDefault();
+                    IsInLobby = true;
+                }
+                else
+                {
+                    Debug.LogError($"Error when trying to create lobby.");
+                }
             }
             catch (Exception e)
             {
@@ -83,8 +91,17 @@ namespace Game.Lobby
                 }
                 
                 var lobbyRequest = await SteamMatchmaking.JoinLobbyAsync(a_steamID);
-                Lobby = lobbyRequest.GetValueOrDefault();
-                IsInLobby = true;
+
+                if (lobbyRequest.HasValue)
+                {
+                    Debug.Log($"Lobby \"{lobbyRequest.Value.Id}\" joined.");
+                    Lobby = lobbyRequest.GetValueOrDefault();
+                    IsInLobby = true;
+                }
+                else
+                {
+                    Debug.LogError($"Error when trying to join lobby \"{a_steamID}\".");
+                }
             }
             catch (Exception e)
             {

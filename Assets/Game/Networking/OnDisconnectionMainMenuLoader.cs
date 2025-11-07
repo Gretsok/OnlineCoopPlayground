@@ -1,3 +1,4 @@
+using Game.Lobby;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,7 @@ namespace Game.Networking
         {
             Debug.Log($"[DISCONNECTION] Reason: {m_networkManager.DisconnectReason}");
             SceneManager.LoadSceneAsync("MainMenu");
+            LobbyManager.Instance.LeaveLobby();
         }
     }
 }

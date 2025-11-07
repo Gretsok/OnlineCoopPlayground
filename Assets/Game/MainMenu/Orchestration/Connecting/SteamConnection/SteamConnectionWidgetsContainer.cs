@@ -1,6 +1,7 @@
 using System;
 using Game.Lobby;
 using Netcode.Transports.Facepunch;
+using Steamworks;
 using TMPro;
 using Tools.UIManagement;
 using Unity.Netcode;
@@ -50,7 +51,7 @@ namespace Game.MainMenu.Orchestration.Connecting.SteamConnection
             var transport = m_networkManager.GetComponent<FacepunchTransport>();
             m_networkManager.NetworkConfig.NetworkTransport = transport;
             
-            if (ushort.TryParse(m_targetSteamIdField.text, out ushort lobbySteamId))
+            if (ulong.TryParse(m_targetSteamIdField.text, out ulong lobbySteamId))
             {
                 var lobbyManager = LobbyManager.Instance;
                 if (a_asHost)
@@ -59,6 +60,10 @@ namespace Game.MainMenu.Orchestration.Connecting.SteamConnection
                     lobbyManager.JoinLobby(lobbySteamId);
                 
                 transport.targetSteamId = lobbyManager.Lobby.Owner.Id;
+            }
+            else
+            {
+                Debug.LogError($"Error when parsing lobby id.");
             }
         }
         
