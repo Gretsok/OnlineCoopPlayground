@@ -1,5 +1,6 @@
 using Game.Gameplay.GameplayInteractionsSystems.EffectsSystem;
 using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
+using Game.Gameplay.PlayerCharacter.Animation;
 using Game.Gameplay.PlayerCharacter.Movement;
 using UnityEngine;
 
@@ -10,7 +11,8 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
         IRigidbodyHolder,
         ISkillCasterHolder,
         ISkillsInventoryHolder, 
-        IEffectsControllerHolder
+        IEffectsControllerHolder,
+        IPlayerCharacterAnimationControllerHolder
     {
         [field: SerializeField]
         public PlayerCharacter PlayerCharacter { get; private set; }
@@ -20,5 +22,7 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
         public SkillCaster SkillCaster => PlayerCharacter.SkillCaster;
         public SkillsInventory SkillsInventory => PlayerCharacter.SkillsInventory;
         public EffectsController EffectsController => PlayerCharacter.EffectsController;
+        public PlayerCharacterAnimationController PlayerCharacterAnimationController =>
+            PlayerCharacter.PlayerCharacterAnimationController;
     }
 }

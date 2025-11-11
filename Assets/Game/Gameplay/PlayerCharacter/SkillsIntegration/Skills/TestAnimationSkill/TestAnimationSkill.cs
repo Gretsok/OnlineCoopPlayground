@@ -1,34 +1,39 @@
 using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
-using Unity.Netcode;
+using Game.Gameplay.PlayerCharacter.Animation;
+using Game.Gameplay.PlayerCharacter.Movement;
 using UnityEngine;
 
-namespace Game.Gameplay.PlayerCharacter.SkillsIntegration.Skills
+namespace Game.Gameplay.PlayerCharacter.SkillsIntegration.Skills.TestAnimationSkill
 {
-    public class TestSkill : ASkill
+    public class TestAnimationSkill : ASkill,
+        IPlayerCharacterMovementControllerBlocker
     {
+        [SerializeField]
+        private float m_animationDuration = 2f;
+
         protected override void HandleSkillTriggered_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         {
             base.HandleSkillTriggered_ServerCalled(a_referencesHolderForSkills);
-            Debug.Log($"[SERVER] {(a_referencesHolderForSkills as CharacterReferencesHolderForSkills).PlayerCharacter.gameObject.name} tested a skill.");
-            StopSkill_ForServer();
+            Invoke(nameof(StopSkill_ForServer), m_animationDuration);
+            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.AddBlocker_ForServer(this);
         }
 
         protected override void HandleSkillTriggered_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         {
             base.HandleSkillTriggered_ClientsCalled(a_referencesHolderForSkills);
-            Debug.Log($"[CLIENT] {(a_referencesHolderForSkills as CharacterReferencesHolderForSkills).PlayerCharacter.gameObject.name} tested a skill.");
+            (a_referencesHolderForSkills as IPlayerCharacterAnimationControllerHolder).PlayerCharacterAnimationController.StartPlayingDance();
         }
 
         protected override void HandleSkillStopped_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         {
             base.HandleSkillStopped_ServerCalled(a_referencesHolderForSkills);
-            Debug.Log($"[SERVER] {(a_referencesHolderForSkills as CharacterReferencesHolderForSkills).PlayerCharacter.gameObject.name} stopped a skill test.");
+            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.RemoveBlocker_ForServer(this);
         }
 
         protected override void HandleSkillStopped_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         {
             base.HandleSkillStopped_ClientsCalled(a_referencesHolderForSkills);
-            Debug.Log($"[CLIENT] {(a_referencesHolderForSkills as CharacterReferencesHolderForSkills).PlayerCharacter.gameObject.name} stopped a skill test.");
+            (a_referencesHolderForSkills as IPlayerCharacterAnimationControllerHolder).PlayerCharacterAnimationController.StopPlayingDance();
         }
     }
 }

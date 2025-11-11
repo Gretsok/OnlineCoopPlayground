@@ -29,10 +29,16 @@ namespace Game.Gameplay.Controls
             Actions.Movement.Jump.canceled += HandleJumpInputCanceled;
             Actions.Movement.Crouch.started += HandleCrouchInputStarted;
             Actions.Movement.Crouch.canceled += HandleCrouchInputCanceled;
+
+            Actions.Combat.Skill_1.started += HandleSkill1InputStarted;
+            Actions.Combat.Skill_2.started += HandleSkill2InputStarted;
+            Actions.Combat.Skill_3.started += HandleSkill3InputStarted;
+            Actions.Combat.Skill_4.started += HandleSkill4InputStarted;
         
             OnInputActionsInitialized?.Invoke(this);
         }
 
+ 
         private void OnDestroy()
         {
             Actions.Disable();
@@ -56,24 +62,41 @@ namespace Game.Gameplay.Controls
     
         private void HandleJumpInputStarted(InputAction.CallbackContext a_obj)
         {
-            AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(0));
         }
 
         private void HandleJumpInputCanceled(InputAction.CallbackContext a_obj)
         {
-        
         }
 
         private void HandleCrouchInputStarted(InputAction.CallbackContext a_obj)
         {
-        
         }
 
         private void HandleCrouchInputCanceled(InputAction.CallbackContext a_obj)
         {
-        
         }
 
+        private void HandleSkill1InputStarted(InputAction.CallbackContext a_obj)
+        {
+            AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(0));
+        }
+
+        private void HandleSkill2InputStarted(InputAction.CallbackContext a_obj)
+        {
+            AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(1));
+        }
+
+        private void HandleSkill3InputStarted(InputAction.CallbackContext a_obj)
+        {
+            AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(2));
+        }
+
+        private void HandleSkill4InputStarted(InputAction.CallbackContext a_obj)
+        {
+            Debug.Log($"No Skill_4 yet");
+        }
+
+        
         private void Update()
         {
             if (Actions == null) 

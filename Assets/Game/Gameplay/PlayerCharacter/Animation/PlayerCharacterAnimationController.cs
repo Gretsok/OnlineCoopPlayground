@@ -6,6 +6,7 @@ namespace Game.Gameplay.PlayerCharacter.Animation
     {
         private readonly int MOVING_ON_Z = Animator.StringToHash("MovingOnZ");
         private readonly int MOVING_ON_X = Animator.StringToHash("MovingOnX");
+        private readonly int IS_DANCING = Animator.StringToHash("IsDancing");
         
         [SerializeField]
         private Animator m_animator;
@@ -23,6 +24,20 @@ namespace Game.Gameplay.PlayerCharacter.Animation
         public void SetHeightAdaptation(float a_heightAdaptation)
         {
             m_animator.SetFloat(MOVING_ON_X, Mathf.Lerp(m_animator.GetFloat(MOVING_ON_X), a_heightAdaptation, m_heightAdaptationRoughness * Time.deltaTime));
+        }
+
+        public void StartPlayingDance()
+        {
+            m_animator.applyRootMotion = true;
+            m_animator.SetBool(IS_DANCING, true);
+        }
+
+        public void StopPlayingDance()
+        {
+            m_animator.SetBool(IS_DANCING, false);
+            m_animator.applyRootMotion = false;
+            m_animator.transform.SetLocalPositionAndRotation(default, default);
+
         }
     }
 }

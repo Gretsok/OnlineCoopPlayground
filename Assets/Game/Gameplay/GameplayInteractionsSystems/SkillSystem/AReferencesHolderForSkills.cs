@@ -1,16 +1,9 @@
 using UnityEngine;
 
-public class AReferencesHolderForSkills : MonoBehaviour
+namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class AReferencesHolderForSkills : MonoBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -334,6 +334,138 @@ namespace Game.Playground.Controls
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Combat"",
+            ""id"": ""b3352a9a-9c68-4529-ae57-2102a14109ef"",
+            ""actions"": [
+                {
+                    ""name"": ""Skill_1"",
+                    ""type"": ""Button"",
+                    ""id"": ""df4db623-3dee-4e58-9158-0c2e7753e774"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill_2"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4224758-ad0c-4e4e-b176-126b908e01af"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill_3"",
+                    ""type"": ""Button"",
+                    ""id"": ""5d781f85-a6ad-4734-9def-398f17c6ef2a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill_4"",
+                    ""type"": ""Button"",
+                    ""id"": ""dd3f3bf4-6202-4b90-a98d-a3b4e0e27fad"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ada13732-4757-4e37-9780-40cad253ab5f"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4853af23-2b01-47d2-86e2-acdbea8b105a"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd78d86f-4614-4d1d-882e-c2a19def99a5"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba901810-f043-4115-9c8e-d40393b1d08c"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1eeff9db-35ff-48b3-b270-82492d2b2628"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""519db7a2-b576-4046-bc3e-9e42e25b8c69"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ca2df91-e11b-4ed6-a430-4f69c0623c51"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5477dbad-74e1-4793-93d8-2207b7dc993e"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill_4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -349,6 +481,12 @@ namespace Game.Playground.Controls
             // Lobby
             m_Lobby = asset.FindActionMap("Lobby", throwIfNotFound: true);
             m_Lobby_ToggleLobbyMenu = m_Lobby.FindAction("ToggleLobbyMenu", throwIfNotFound: true);
+            // Combat
+            m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
+            m_Combat_Skill_1 = m_Combat.FindAction("Skill_1", throwIfNotFound: true);
+            m_Combat_Skill_2 = m_Combat.FindAction("Skill_2", throwIfNotFound: true);
+            m_Combat_Skill_3 = m_Combat.FindAction("Skill_3", throwIfNotFound: true);
+            m_Combat_Skill_4 = m_Combat.FindAction("Skill_4", throwIfNotFound: true);
         }
 
         ~@PlayerActions()
@@ -356,6 +494,7 @@ namespace Game.Playground.Controls
             UnityEngine.Debug.Assert(!m_Movement.enabled, "This will cause a leak and performance issues, PlayerActions.Movement.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_Camera.enabled, "This will cause a leak and performance issues, PlayerActions.Camera.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_Lobby.enabled, "This will cause a leak and performance issues, PlayerActions.Lobby.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Combat.enabled, "This will cause a leak and performance issues, PlayerActions.Combat.Disable() has not been called.");
         }
 
         /// <summary>
@@ -737,6 +876,135 @@ namespace Game.Playground.Controls
         /// Provides a new <see cref="LobbyActions" /> instance referencing this action map.
         /// </summary>
         public LobbyActions @Lobby => new LobbyActions(this);
+
+        // Combat
+        private readonly InputActionMap m_Combat;
+        private List<ICombatActions> m_CombatActionsCallbackInterfaces = new List<ICombatActions>();
+        private readonly InputAction m_Combat_Skill_1;
+        private readonly InputAction m_Combat_Skill_2;
+        private readonly InputAction m_Combat_Skill_3;
+        private readonly InputAction m_Combat_Skill_4;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "Combat".
+        /// </summary>
+        public struct CombatActions
+        {
+            private @PlayerActions m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public CombatActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "Combat/Skill_1".
+            /// </summary>
+            public InputAction @Skill_1 => m_Wrapper.m_Combat_Skill_1;
+            /// <summary>
+            /// Provides access to the underlying input action "Combat/Skill_2".
+            /// </summary>
+            public InputAction @Skill_2 => m_Wrapper.m_Combat_Skill_2;
+            /// <summary>
+            /// Provides access to the underlying input action "Combat/Skill_3".
+            /// </summary>
+            public InputAction @Skill_3 => m_Wrapper.m_Combat_Skill_3;
+            /// <summary>
+            /// Provides access to the underlying input action "Combat/Skill_4".
+            /// </summary>
+            public InputAction @Skill_4 => m_Wrapper.m_Combat_Skill_4;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_Combat; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="CombatActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(CombatActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="CombatActions" />
+            public void AddCallbacks(ICombatActions instance)
+            {
+                if (instance == null || m_Wrapper.m_CombatActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_CombatActionsCallbackInterfaces.Add(instance);
+                @Skill_1.started += instance.OnSkill_1;
+                @Skill_1.performed += instance.OnSkill_1;
+                @Skill_1.canceled += instance.OnSkill_1;
+                @Skill_2.started += instance.OnSkill_2;
+                @Skill_2.performed += instance.OnSkill_2;
+                @Skill_2.canceled += instance.OnSkill_2;
+                @Skill_3.started += instance.OnSkill_3;
+                @Skill_3.performed += instance.OnSkill_3;
+                @Skill_3.canceled += instance.OnSkill_3;
+                @Skill_4.started += instance.OnSkill_4;
+                @Skill_4.performed += instance.OnSkill_4;
+                @Skill_4.canceled += instance.OnSkill_4;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="CombatActions" />
+            private void UnregisterCallbacks(ICombatActions instance)
+            {
+                @Skill_1.started -= instance.OnSkill_1;
+                @Skill_1.performed -= instance.OnSkill_1;
+                @Skill_1.canceled -= instance.OnSkill_1;
+                @Skill_2.started -= instance.OnSkill_2;
+                @Skill_2.performed -= instance.OnSkill_2;
+                @Skill_2.canceled -= instance.OnSkill_2;
+                @Skill_3.started -= instance.OnSkill_3;
+                @Skill_3.performed -= instance.OnSkill_3;
+                @Skill_3.canceled -= instance.OnSkill_3;
+                @Skill_4.started -= instance.OnSkill_4;
+                @Skill_4.performed -= instance.OnSkill_4;
+                @Skill_4.canceled -= instance.OnSkill_4;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="CombatActions.UnregisterCallbacks(ICombatActions)" />.
+            /// </summary>
+            /// <seealso cref="CombatActions.UnregisterCallbacks(ICombatActions)" />
+            public void RemoveCallbacks(ICombatActions instance)
+            {
+                if (m_Wrapper.m_CombatActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="CombatActions.AddCallbacks(ICombatActions)" />
+            /// <seealso cref="CombatActions.RemoveCallbacks(ICombatActions)" />
+            /// <seealso cref="CombatActions.UnregisterCallbacks(ICombatActions)" />
+            public void SetCallbacks(ICombatActions instance)
+            {
+                foreach (var item in m_Wrapper.m_CombatActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_CombatActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="CombatActions" /> instance referencing this action map.
+        /// </summary>
+        public CombatActions @Combat => new CombatActions(this);
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Movement" which allows adding and removing callbacks.
         /// </summary>
@@ -795,6 +1063,42 @@ namespace Game.Playground.Controls
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnToggleLobbyMenu(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Combat" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="CombatActions.AddCallbacks(ICombatActions)" />
+        /// <seealso cref="CombatActions.RemoveCallbacks(ICombatActions)" />
+        public interface ICombatActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "Skill_1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSkill_1(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Skill_2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSkill_2(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Skill_3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSkill_3(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Skill_4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSkill_4(InputAction.CallbackContext context);
         }
     }
 }

@@ -11,10 +11,10 @@ namespace Game.Gameplay.GameplayInteractionsSystems.EffectsSystem
         
         private List<TimedEffect> m_onGoingTimeEffects = new List<TimedEffect>();
 
-        public void AddTimedEffect_ForServer(TimedEffect a_timedEffect)
+        public TimedEffect AddTimedEffect_ForServer(TimedEffect a_timedEffect)
         {
             if (!a_timedEffect.CanBePlayed_ForServer(m_referencesHolder))
-                return;
+                return null;
 
             if (!a_timedEffect.IsSpawned)
             {
@@ -30,8 +30,8 @@ namespace Game.Gameplay.GameplayInteractionsSystems.EffectsSystem
             };
             
             a_timedEffect.PlayEffect_ForServer(m_referencesHolder);
-            
-            
+
+            return a_timedEffect;
         }
 
         [Rpc(SendTo.ClientsAndHost)]
