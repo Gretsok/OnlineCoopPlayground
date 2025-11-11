@@ -1,5 +1,8 @@
 using Game.Gameplay.Controls;
+using Game.Gameplay.GameplayInteractionsSystems.EffectsSystem;
+using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
 using Game.Gameplay.PlayerCharacter.Movement;
+using Game.Gameplay.PlayerCharacter.SkillsIntegration;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,12 +10,21 @@ namespace Game.Gameplay.PlayerCharacter
 {
     public class PlayerCharacter : NetworkBehaviour, 
         IPlayerCharacterMovementControllerHolder, 
-        IRigidbodyHolder
+        IRigidbodyHolder,
+        ISkillCasterHolder,
+        ISkillsInventoryHolder, 
+        IEffectsControllerHolder
     {
          [field: SerializeField]
          public Rigidbody Rigidbody { get; private set; }
          [field: SerializeField]
          public PlayerCharacterMovementController MovementController { get; private set; }
+         [field: SerializeField]
+         public SkillCaster SkillCaster { get; private set; }
+         [field: SerializeField]
+         public SkillsInventory SkillsInventory { get; private set; }
+         [field: SerializeField]
+         public EffectsController EffectsController { get; private set; }
 
          private void Start()
          {

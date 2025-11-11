@@ -50,7 +50,7 @@ namespace Game.Gameplay.Controls
     
         private void HandleJumpInputStarted(InputAction.CallbackContext a_obj)
         {
-        
+            AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(0));
         }
 
         private void HandleJumpInputCanceled(InputAction.CallbackContext a_obj)

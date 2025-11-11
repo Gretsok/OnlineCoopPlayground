@@ -10,20 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e651dbb3fbac04af2b8f5abf007ddc23, type: 3}
-  m_Name: DefaultNetworkPrefabs
+  m_Name: SkillsNetworkPrefabs
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkPrefabsList
   IsDefault: 1
   List:
-  - Override: 0
-    Prefab: {fileID: 797955291302874581, guid: 34e7d15a8bf5c6246ac6ffa2af302db4, type: 3}
-    SourcePrefabToOverride: {fileID: 0}
-    SourceHashToOverride: 0
-    OverridingTargetPrefab: {fileID: 0}
-  - Override: 0
-    Prefab: {fileID: 5279266061019908782, guid: 7672695045d889f4092315529333e565, type: 3}
-    SourcePrefabToOverride: {fileID: 0}
-    SourceHashToOverride: 0
-    OverridingTargetPrefab: {fileID: 0}
   - Override: 0
     Prefab: {fileID: 7231301933781294762, guid: ea9ed7bf14b532444802050d2585bff0, type: 3}
     SourcePrefabToOverride: {fileID: 0}
