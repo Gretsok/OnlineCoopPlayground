@@ -60,6 +60,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
         protected virtual void HandleSkillTriggered_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         { }
 
+        [Rpc(SendTo.ClientsAndHost)]
         private void HandleSkillTriggered_ClientsRpc()
         {
             HandleSkillTriggered_ClientsCalled(m_referencesHolderForSkills);  

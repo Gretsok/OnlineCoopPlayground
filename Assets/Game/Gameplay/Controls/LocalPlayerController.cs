@@ -33,6 +33,12 @@ namespace Game.Gameplay.Controls
             OnInputActionsInitialized?.Invoke(this);
         }
 
+        private void OnDestroy()
+        {
+            Actions.Disable();
+            Actions.Dispose();
+        }
+
         public PlayerCharacter.PlayerCharacter AssignedCharacter { get; private set; }
 
         public event Action<LocalPlayerController> OnCharacterAssigned;
