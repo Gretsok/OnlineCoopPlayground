@@ -18,7 +18,17 @@ namespace Game.Networking
 
         private void HandleClientDisconnectCallback(ulong a_obj)
         {
-            Debug.Log($"[DISCONNECTION] Reason: {m_networkManager.DisconnectReason}");
+            var isPlayerDisconnecting = m_networkManager.LocalClientId == a_obj;
+            var isServer = m_networkManager.IsServer;
+
+            if (isPlayerDisconnecting)
+                Debug.Log($"[DISCONNECTION] Reason: {m_networkManager.DisconnectReason}");
+            else if (isServer)
+                Debug.Log($"[REMOTE-CLIENT-DISCONNECTION] Reason: {m_networkManager.DisconnectReason}");
+
+            if (!isPlayerDisconnecting)
+                return;
+            
             SceneManager.LoadSceneAsync("MainMenu");
             LobbyManager.Instance.LeaveLobby();
         }

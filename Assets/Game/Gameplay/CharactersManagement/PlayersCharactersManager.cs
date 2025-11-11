@@ -73,7 +73,8 @@ namespace Game.Gameplay.CharactersManagement
             Debug.Log($"[PlayersCharactersManager] Removing character with Client ID {a_clientID}");
 
             var character = m_characters[a_clientID];
-            character?.NetworkObject?.Despawn();
+            m_characters.Remove(a_clientID);
+            Destroy(character?.NetworkObject?.gameObject);
         }
 
         public override void OnNetworkPreDespawn()
@@ -89,6 +90,10 @@ namespace Game.Gameplay.CharactersManagement
             while (enumerator.MoveNext())
             {
                 var kvp = enumerator.Current;
+                
+                if(!kvp.Value || !kvp.Value.NetworkObject)
+                    continue;
+                
                 if (kvp.Value.NetworkObject.IsSpawned)
                     kvp.Value.NetworkObject.Despawn();
                 else
