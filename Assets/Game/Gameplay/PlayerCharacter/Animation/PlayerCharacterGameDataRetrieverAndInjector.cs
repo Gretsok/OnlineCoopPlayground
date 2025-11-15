@@ -14,7 +14,7 @@ namespace Game.Gameplay.PlayerCharacter.Animation
         
         private void Update()
         {
-            var flattenVelocity = m_playerCharacter.MovementController.CurrentVelocity.Flatten();
+            var flattenVelocity = m_playerCharacter.MovementController.CurrentPlanarVelocity.Flatten();
             m_animationController.SetForwardSpeed(flattenVelocity.magnitude);
 
             if (flattenVelocity.sqrMagnitude > 0.3f * 0.3f)
@@ -22,6 +22,8 @@ namespace Game.Gameplay.PlayerCharacter.Animation
                 m_playerCharacter.transform.forward = Vector3.Slerp(m_playerCharacter.transform.forward,
                     flattenVelocity.normalized, Time.deltaTime * 18f);
             }
+
+            m_animationController.SetIsGrounded(m_playerCharacter.IsGroundedController.IsGrounded);
         }
     }
 }

@@ -183,6 +183,7 @@ Transform:
   - {fileID: 951675201632340886}
   - {fileID: 3797535634858779700}
   - {fileID: 8939760264694273228}
+  - {fileID: 1914559101646563125}
   m_Father: {fileID: 7747578712009234256}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4944279591422810767
@@ -281,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 353706981
+  GlobalObjectIdHash: 1510503550
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -313,6 +314,7 @@ MonoBehaviour:
   <SkillsInventory>k__BackingField: {fileID: 5660804889605050817}
   <EffectsController>k__BackingField: {fileID: 908141192517678937}
   <PlayerCharacterAnimationController>k__BackingField: {fileID: 8883316647476428573}
+  <IsGroundedController>k__BackingField: {fileID: 1685879575662610707}
 --- !u!54 &8369845004852220159
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -436,6 +438,62 @@ Transform:
   - {fileID: 4642621380867169238}
   m_Father: {fileID: 7747578712009234256}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7286877470958853747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1914559101646563125}
+  - component: {fileID: 1685879575662610707}
+  m_Layer: 0
+  m_Name: IsGroundedController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1914559101646563125
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7286877470958853747}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6234747062953758590}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1685879575662610707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7286877470958853747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc4702240f1361c41996ecdded84f9f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.PlayerCharacter.Movement.IsGroundedController
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_checkersData:
+  - RelativePosition: {x: 0, y: 0, z: 0}
+    Depth: 0.05
+  - RelativePosition: {x: 0.15, y: 0, z: 0}
+    Depth: 0.05
+  - RelativePosition: {x: -0.15, y: 0, z: 0}
+    Depth: 0.05
+  - RelativePosition: {x: 0, y: 0, z: 0.2}
+    Depth: 0.05
+  - RelativePosition: {x: 0, y: 0, z: -0.2}
+    Depth: 0.05
 --- !u!1 &7901854154017609462
 GameObject:
   m_ObjectHideFlags: 0

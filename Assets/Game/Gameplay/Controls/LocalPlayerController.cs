@@ -1,5 +1,7 @@
 using System;
+using Game.Gameplay.CameraSystem;
 using Game.Playground.Controls;
+using Tools.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +14,8 @@ namespace Game.Gameplay.Controls
         public PlayerActions Actions { get; private set; }
 
         public Action<LocalPlayerController> OnInputActionsInitialized;
+        
+        private CameraController m_cameraController;
     
         private void Awake()
         {
@@ -22,6 +26,12 @@ namespace Game.Gameplay.Controls
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
+            if (!m_cameraController)
+                m_cameraController = CameraController.Instance;            
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
             Actions = new PlayerActions();
             Actions.Enable();
 
@@ -58,10 +68,19 @@ namespace Game.Gameplay.Controls
         
             AssignedCharacter = a_character;
             OnCharacterAssigned?.Invoke(this);
+            
+            if (!m_cameraController)
+                m_cameraController = CameraController.Instance;
+            
+            m_cameraController.AssignCameraTarget(a_character.transform);
         }
     
         private void HandleJumpInputStarted(InputAction.CallbackContext a_obj)
         {
+            if (!AssignedCharacter)
+                return;
+            
+            AssignedCharacter.MovementController?.Jump();
         }
 
         private void HandleJumpInputCanceled(InputAction.CallbackContext a_obj)
@@ -108,8 +127,12 @@ namespace Game.Gameplay.Controls
 
             var moveInput = Actions.Movement.Move.ReadValue<Vector2>();
             var lookAroundInput = Actions.Camera.LookAround.ReadValue<Vector2>();
-        
-            AssignedCharacter.MovementController.SetDirectionInput(moveInput.x * Vector3.right + moveInput.y * new Vector3(0f, 0.1f, 0.9f));
+
+            var forward = m_cameraController.CameraAnchor.transform.forward.Flatten().normalized;
+            var right = Vector3.Cross(Vector3.up, forward).normalized;
+            AssignedCharacter.MovementController.SetDirectionInput(moveInput.x * right + moveInput.y * forward);
+            
+            m_cameraController.SetLookAroundInput(lookAroundInput);
         }
     }
 }

@@ -15,7 +15,8 @@ namespace Game.Gameplay.PlayerCharacter
         ISkillCasterHolder,
         ISkillsInventoryHolder, 
         IEffectsControllerHolder,
-        IPlayerCharacterAnimationControllerHolder
+        IPlayerCharacterAnimationControllerHolder,
+        IIsGroundedControllerHolder
     {
          [field: SerializeField]
          public Rigidbody Rigidbody { get; private set; }
@@ -29,10 +30,13 @@ namespace Game.Gameplay.PlayerCharacter
          public EffectsController EffectsController { get; private set; }
          [field: SerializeField]
          public PlayerCharacterAnimationController PlayerCharacterAnimationController { get; private set; }
+         [field: SerializeField]
+         public IsGroundedController IsGroundedController { get; private set; }
 
          private void Start()
          {
-             MovementController.SetDependencies(Rigidbody);
+             MovementController.SetDependencies(Rigidbody, IsGroundedController);
+             IsGroundedController.SetRelativeSource(Rigidbody.transform);
          }
 
          protected override void OnNetworkPostSpawn()

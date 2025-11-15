@@ -6,6 +6,7 @@ namespace Game.Gameplay.PlayerCharacter.Animation
     {
         private readonly int MOVING_ON_Z = Animator.StringToHash("MovingOnZ");
         private readonly int MOVING_ON_X = Animator.StringToHash("MovingOnX");
+        private readonly int IS_GROUNDED = Animator.StringToHash("IsGrounded");
         private readonly int IS_DANCING = Animator.StringToHash("IsDancing");
         
         [SerializeField]
@@ -26,6 +27,11 @@ namespace Game.Gameplay.PlayerCharacter.Animation
             m_animator.SetFloat(MOVING_ON_X, Mathf.Lerp(m_animator.GetFloat(MOVING_ON_X), a_heightAdaptation, m_heightAdaptationRoughness * Time.deltaTime));
         }
 
+        public void SetIsGrounded(bool a_isGrounded)
+        {
+            m_animator.SetBool(IS_GROUNDED, a_isGrounded);
+        }
+        
         public void StartPlayingDance()
         {
             m_animator.applyRootMotion = true;
@@ -37,7 +43,6 @@ namespace Game.Gameplay.PlayerCharacter.Animation
             m_animator.SetBool(IS_DANCING, false);
             m_animator.applyRootMotion = false;
             m_animator.transform.SetLocalPositionAndRotation(default, default);
-
         }
     }
 }

@@ -12,7 +12,8 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
         ISkillCasterHolder,
         ISkillsInventoryHolder, 
         IEffectsControllerHolder,
-        IPlayerCharacterAnimationControllerHolder
+        IPlayerCharacterAnimationControllerHolder,
+        IIsGroundedControllerHolder
     {
         [field: SerializeField]
         public PlayerCharacter PlayerCharacter { get; private set; }
@@ -24,5 +25,7 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
         public EffectsController EffectsController => PlayerCharacter.EffectsController;
         public PlayerCharacterAnimationController PlayerCharacterAnimationController =>
             PlayerCharacter.PlayerCharacterAnimationController;
+
+        public IsGroundedController IsGroundedController => PlayerCharacter.IsGroundedController;
     }
 }

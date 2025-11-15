@@ -15,5 +15,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement.Data
         public float Deceleration { get; private set; } = 15f;
         [field: SerializeField]
         public float GravityAcceleration { get; private set; } = 15f;
+        [field: SerializeField]
+        public float JumpVelocity { get; private set; } = 30f;
     }
 }
