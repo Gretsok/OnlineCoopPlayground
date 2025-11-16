@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Gameplay.PlayerCharacter.Movement.Data;
+using Tools.Utils;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -114,7 +115,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement
                 HandleInAirMovement();
             }
             
-            m_rigidbody.linearVelocity = CurrentPlanarVelocity + Vector3.up * VerticalSpeed;
+            m_rigidbody.linearVelocity = CurrentPlanarVelocity.Flatten() + Vector3.up * VerticalSpeed;
             m_rigidbody.angularVelocity = Vector3.zero;
         }
 
@@ -124,7 +125,6 @@ namespace Game.Gameplay.PlayerCharacter.Movement
             {
                 var maxSpeed = MovementDataAsset.MaxMovementSpeed 
                                * MovementDataAsset.MaxSpeedFactorAccordingToInput.Evaluate(m_directionInput.Value.magnitude);
-                m_rigidbody.maxLinearVelocity = maxSpeed;
 
                 var newVelocitySpeed = m_currentPlanarVelocity.Value.magnitude + MovementDataAsset.Acceleration * Time.deltaTime;
                 if (newVelocitySpeed > maxSpeed)

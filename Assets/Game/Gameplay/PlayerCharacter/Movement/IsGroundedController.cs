@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,6 +18,14 @@ namespace Game.Gameplay.PlayerCharacter.Movement
             new NetworkVariable<bool>(false, writePerm: NetworkVariableWritePermission.Owner);
         public bool IsGrounded => m_isGrounded?.Value ?? false;
 
+        public event Action<IsGroundedController> OnGrounded_OwnerCalled;
+        public event Action<IsGroundedController> OnGrounded_ServerCalled;
+        public event Action<IsGroundedController> OnGrounded_ClientsCalled;
+        public event Action<IsGroundedController> OnGroundLeft_OwnerCalled;
+        public event Action<IsGroundedController> OnGroundLeft_ServerCalled;
+        public event Action<IsGroundedController> OnGroundLeft_ClientsCalled;
+        
+        
         [SerializeField]
         private List<SCheckerData> m_checkersData = new();
 
@@ -46,8 +55,50 @@ namespace Game.Gameplay.PlayerCharacter.Movement
                     break;
                 }
             }
+
+            var previousValue = m_isGrounded.Value;
             
             m_isGrounded.Value = isGrounded;
+            
+            if (previousValue != isGrounded)
+            {
+                if (isGrounded)
+                {
+                    OnGrounded_OwnerCalled?.Invoke(this);
+                    NotifyGrounded_ServerRpc();
+                    NotifyGrounded_ClientsRpc();
+                }
+                else
+                {
+                    OnGroundLeft_OwnerCalled?.Invoke(this);
+                    NotifyGroundLeft_ServerRpc();
+                    NotifyGroundLeft_ClientsRpc();
+                }
+            }
+        }
+
+        [Rpc(SendTo.Server)]
+        private void NotifyGrounded_ServerRpc()
+        {
+            OnGrounded_ServerCalled?.Invoke(this);
+        }
+        
+        [Rpc(SendTo.ClientsAndHost)]
+        private void NotifyGrounded_ClientsRpc()
+        {
+            OnGrounded_ClientsCalled?.Invoke(this);
+        }
+        
+        [Rpc(SendTo.Server)]
+        private void NotifyGroundLeft_ServerRpc()
+        {
+            OnGroundLeft_ServerCalled?.Invoke(this);
+        }
+        
+        [Rpc(SendTo.ClientsAndHost)]
+        private void NotifyGroundLeft_ClientsRpc()
+        {
+            OnGroundLeft_ClientsCalled?.Invoke(this);
         }
 
         private void OnDrawGizmos()

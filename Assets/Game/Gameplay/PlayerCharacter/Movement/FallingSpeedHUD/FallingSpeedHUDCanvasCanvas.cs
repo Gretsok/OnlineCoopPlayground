@@ -1,11 +1,10 @@
-using System.Collections;
-using Game.Gameplay.Controls;
+using Game.Gameplay.LocalHUDContainer;
 using TMPro;
 using UnityEngine;
 
 namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
 {
-    public class FallingSpeedHUDCanvas : MonoBehaviour
+    public class FallingSpeedHUDCanvasCanvas : ALocalHUDCanvas
     {
         [SerializeField]
         private float m_maxFallingSpeed = 5f;
@@ -18,29 +17,15 @@ namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
 
         [SerializeField]
         private RectTransform m_fallingSpeedFiller;
-
-        private PlayerCharacter m_localCharacter;
         
-        IEnumerator Start()
-        {
-            var localPlayerController = LocalPlayerController.Instance;
-            yield return new WaitUntil(() => localPlayerController.AssignedCharacter != null);
-            localPlayerController.OnCharacterAssigned += HandleNewCharacterAssigned;
-            HandleNewCharacterAssigned(localPlayerController);
-        }
-
-        private void HandleNewCharacterAssigned(LocalPlayerController a_localPlayerController)
-        {
-            m_localCharacter = a_localPlayerController.AssignedCharacter;
-        }
 
         private void Update()
         {
-            if (!m_localCharacter)
+            if (!M_LocalCharacter)
                 return;
 
-            var verticalSpeed = m_localCharacter.MovementController.VerticalSpeed;
-            if (m_localCharacter.IsGroundedController.IsGrounded || verticalSpeed > 0)
+            var verticalSpeed = M_LocalCharacter.MovementController.VerticalSpeed;
+            if (M_LocalCharacter.IsGroundedController.IsGrounded || verticalSpeed > 0)
             {
                 m_container.SetActive(false);
                 return;
