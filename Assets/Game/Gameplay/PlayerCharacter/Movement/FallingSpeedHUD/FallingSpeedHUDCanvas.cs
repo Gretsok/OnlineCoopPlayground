@@ -39,19 +39,19 @@ namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
             if (!m_localCharacter)
                 return;
 
-            if (m_localCharacter.IsGroundedController.IsGrounded)
+            var verticalSpeed = m_localCharacter.MovementController.VerticalSpeed;
+            if (m_localCharacter.IsGroundedController.IsGrounded || verticalSpeed > 0)
             {
                 m_container.SetActive(false);
                 return;
             }
             m_container.SetActive(true);
             
-            var verticalSpeed = m_localCharacter.MovementController.VerticalSpeed;
             
             m_fallingSpeedText.text = $"{verticalSpeed:0} m/s";
-            var anchorTemp = m_fallingSpeedFiller.anchorMax;
-            anchorTemp.x =  Mathf.Clamp01(-verticalSpeed / m_maxFallingSpeed);
-            m_fallingSpeedFiller.anchorMax = anchorTemp;
+            var anchorTemp = m_fallingSpeedFiller.anchorMin;
+            anchorTemp.y = 1f - Mathf.Clamp01(-verticalSpeed / m_maxFallingSpeed);
+            m_fallingSpeedFiller.anchorMin = anchorTemp;
         }
     }
 }
