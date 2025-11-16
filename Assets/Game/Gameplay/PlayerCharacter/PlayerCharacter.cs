@@ -1,6 +1,7 @@
 using Game.Gameplay.Controls;
 using Game.Gameplay.GameplayInteractionsSystems.EffectsSystem;
 using Game.Gameplay.GameplayInteractionsSystems.HealthHandling;
+using Game.Gameplay.GameplayInteractionsSystems.InteractionSystem;
 using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
 using Game.Gameplay.PlayerCharacter.Animation;
 using Game.Gameplay.PlayerCharacter.FallingDamage;
@@ -19,7 +20,8 @@ namespace Game.Gameplay.PlayerCharacter
         IEffectsControllerHolder,
         IPlayerCharacterAnimationControllerHolder,
         IIsGroundedControllerHolder,
-        IHealthControllerHolder
+        IHealthControllerHolder,
+        IInteractorHolder
     {
         [field: Header("Core Character Controllers")]
         [field: SerializeField]
@@ -38,6 +40,8 @@ namespace Game.Gameplay.PlayerCharacter
         public IsGroundedController IsGroundedController { get; private set; }
         [field: SerializeField]
         public HealthController HealthController { get; private set; }
+        [field: SerializeField]
+        public Interactor Interactor { get; private set; }
 
         [field: Header("Gameplay Rules Handlers")]
         [field: SerializeField]
@@ -48,6 +52,7 @@ namespace Game.Gameplay.PlayerCharacter
             // Initializing Controllers
             MovementController.SetDependencies(Rigidbody, IsGroundedController);
             IsGroundedController.SetRelativeSource(Rigidbody.transform);
+            Interactor.SetSource(this);
             
             // Initializing Rules Handlers
             FallingDamageHandler.SetDependencies(IsGroundedController, MovementController, HealthController);

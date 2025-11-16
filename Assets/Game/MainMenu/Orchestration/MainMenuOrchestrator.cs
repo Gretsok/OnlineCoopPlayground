@@ -1,3 +1,4 @@
+using System;
 using Tools.Orchestration;
 using UnityEngine;
 
@@ -29,6 +30,12 @@ namespace Game.MainMenu.Orchestration
         private OrchestrationState m_disconnectionHandlingScreenState;
         [SerializeField]
         private OrchestrationState m_connectingScreenState;
+
+        private void Start()
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
 
         public void GoToRootineState()
         {

@@ -40,15 +40,17 @@ namespace Game.Gameplay.Controls
             Actions.Movement.Crouch.started += HandleCrouchInputStarted;
             Actions.Movement.Crouch.canceled += HandleCrouchInputCanceled;
 
-            Actions.Combat.Skill_1.started += HandleSkill1InputStarted;
-            Actions.Combat.Skill_2.started += HandleSkill2InputStarted;
-            Actions.Combat.Skill_3.started += HandleSkill3InputStarted;
-            Actions.Combat.Skill_4.started += HandleSkill4InputStarted;
+            Actions.Interaction.Interact.started += HandleInteractInputStarted;
+            Actions.Interaction.Skill_1.started += HandleSkill1InputStarted;
+            Actions.Interaction.Skill_2.started += HandleSkill2InputStarted;
+            Actions.Interaction.Skill_3.started += HandleSkill3InputStarted;
         
             OnInputActionsInitialized?.Invoke(this);
         }
 
- 
+
+
+
         private void OnDestroy()
         {
             Actions.Disable();
@@ -94,6 +96,11 @@ namespace Game.Gameplay.Controls
         private void HandleCrouchInputCanceled(InputAction.CallbackContext a_obj)
         {
         }
+        
+        private void HandleInteractInputStarted(InputAction.CallbackContext a_obj)
+        {
+            AssignedCharacter.Interactor.TryToInteract_ForOwner();
+        }
 
         private void HandleSkill1InputStarted(InputAction.CallbackContext a_obj)
         {
@@ -110,10 +117,6 @@ namespace Game.Gameplay.Controls
             AssignedCharacter.SkillCaster.TryToTriggerSkill_ForOwner(AssignedCharacter.SkillsInventory.GetSkillByIndex(2));
         }
 
-        private void HandleSkill4InputStarted(InputAction.CallbackContext a_obj)
-        {
-            Debug.Log($"No Skill_4 yet");
-        }
 
         
         private void Update()
