@@ -1,3 +1,4 @@
+using Game.Gameplay.PlayerCharacter.Movement;
 using Tools.Utils;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,28 +7,34 @@ namespace Game.Gameplay.PlayerCharacter.Animation
 {
     public class PlayerCharacterGameDataRetrieverAndInjector : NetworkBehaviour
     {
-        [SerializeField]
-        private PlayerCharacter m_playerCharacter;
+        private MonoBehaviour m_parent;
 
         [SerializeField]
         private PlayerCharacterAnimationController m_animationController;
+
+        public void SetDependencies(MonoBehaviour a_parent)
+        {
+            m_parent = a_parent;
+        }
         
         private void Update()
         {
-            if (m_playerCharacter.MovementController.CurrentActiveBehaviour ==
-                m_playerCharacter.MovementController.DefaultMovementBehaviour)
+            if (m_parent is IPlayerCharacterMovementControllerHolder movementControllerHolder &&
+                movementControllerHolder.MovementController.CurrentActiveBehaviour ==
+                movementControllerHolder.MovementController.DefaultMovementBehaviour)
             {
-                var flattenVelocity = m_playerCharacter.MovementController.DefaultMovementBehaviour.CurrentPlanarVelocity.Flatten();
+                var flattenVelocity = movementControllerHolder.MovementController.DefaultMovementBehaviour.CurrentPlanarVelocity.Flatten();
                 m_animationController.SetForwardSpeed(flattenVelocity.magnitude);
 
                 if (flattenVelocity.sqrMagnitude > 0.3f * 0.3f)
                 {
-                    m_playerCharacter.transform.forward = Vector3.Slerp(m_playerCharacter.transform.forward,
+                    m_parent.transform.forward = Vector3.Slerp(m_parent.transform.forward,
                         flattenVelocity.normalized, Time.deltaTime * 18f);
                 }
             }
 
-            m_animationController.SetIsGrounded(m_playerCharacter.IsGroundedController.IsGrounded);
+            if (m_parent is IIsGroundedControllerHolder isGroundedControllerHolder)
+                m_animationController.SetIsGrounded(isGroundedControllerHolder.IsGroundedController.IsGrounded);
         }
     }
 }

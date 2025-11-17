@@ -13,7 +13,7 @@ namespace Game.Lobby.LobbyOverlay.PlayerDisplay.PlayersContextActions.KickPlayer
             networkManager.DisconnectClient(
                 networkManager.ConnectedClients.First(
                     a_clientPair => 
-                        a_clientPair.Value.PlayerObject.GetComponent<AbstractConnectedClientObject>().SteamId.Value 
+                        a_clientPair.Value.PlayerObject.GetComponent<AbstractConnectedClientObject>().SteamId 
                         == ContextActionWidget.AssociatedLobbyMember.Id).Key,
                 "Player kicked by the lobby owner.");
         }

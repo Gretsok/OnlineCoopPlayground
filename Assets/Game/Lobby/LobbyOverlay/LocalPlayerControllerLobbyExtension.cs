@@ -1,5 +1,5 @@
-using System;
 using Game.Gameplay.Controls;
+using Game.Gameplay.PlayerCharacter.Implementations.Default;
 using Tools.UIManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,19 +13,19 @@ namespace Game.Lobby.LobbyOverlay
         {
             m_localPlayerController = GetComponent<LocalPlayerController>();
 
-            m_localPlayerController.OnInputActionsInitialized += HandleInputActionsInitialized;
+            m_localPlayerController.DefaultLocalPlayerInputProcessor.OnInputActionsInitialized += HandleInputActionsInitialized;
         }
 
         private void OnDestroy()
         {
-            m_localPlayerController.Actions.Lobby.ToggleLobbyMenu.started -= HandleToggleLobbyMenuStarted;
+            m_localPlayerController.DefaultLocalPlayerInputProcessor.Actions.Lobby.ToggleLobbyMenu.started -= HandleToggleLobbyMenuStarted;
 
-            m_localPlayerController.OnInputActionsInitialized -= HandleInputActionsInitialized;
+            m_localPlayerController.DefaultLocalPlayerInputProcessor.OnInputActionsInitialized -= HandleInputActionsInitialized;
         }
 
-        private void HandleInputActionsInitialized(LocalPlayerController a_localPlayerController)
+        private void HandleInputActionsInitialized(DefaultLocalPlayerInputProcessor a_defaultLocalPlayerInputProcessor)
         {
-            a_localPlayerController.Actions.Lobby.ToggleLobbyMenu.started += HandleToggleLobbyMenuStarted;
+            a_defaultLocalPlayerInputProcessor.Actions.Lobby.ToggleLobbyMenu.started += HandleToggleLobbyMenuStarted;
         }
 
         private void HandleToggleLobbyMenuStarted(InputAction.CallbackContext a_obj)

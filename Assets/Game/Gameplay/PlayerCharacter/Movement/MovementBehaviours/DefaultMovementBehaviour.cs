@@ -22,7 +22,9 @@ namespace Game.Gameplay.PlayerCharacter.Movement.MovementBehaviours
         {
             if (!IsSpawned)
                 return;
-            if (Blackboard.IsBlocked)
+            if (Blackboard?.IsBlocked ?? true)
+                return;
+            if (!IsGroundedController)
                 return;
 
             if (IsGroundedController.IsGrounded)

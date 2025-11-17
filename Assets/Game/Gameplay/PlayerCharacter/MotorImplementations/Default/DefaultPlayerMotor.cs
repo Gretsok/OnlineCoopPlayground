@@ -1,27 +1,19 @@
-using Game.Gameplay.Controls;
-using Game.Gameplay.GameplayInteractionsSystems.EffectsSystem;
-using Game.Gameplay.GameplayInteractionsSystems.HealthHandling;
 using Game.Gameplay.GameplayInteractionsSystems.InteractionSystem;
 using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
-using Game.Gameplay.PlayerCharacter.Animation;
 using Game.Gameplay.PlayerCharacter.FallingDamage;
 using Game.Gameplay.PlayerCharacter.Movement;
 using Game.Gameplay.PlayerCharacter.SkillsIntegration;
 using Game.Gameplay.VehiclesSystem;
-using Unity.Netcode;
 using UnityEngine;
 
 namespace Game.Gameplay.PlayerCharacter
 {
-    public class PlayerCharacter : NetworkBehaviour, 
+    public class DefaultPlayerMotor : APlayerMotor, 
         IPlayerCharacterMovementControllerHolder, 
         IRigidbodyHolder,
         ISkillCasterHolder,
         ISkillsInventoryHolder, 
-        IEffectsControllerHolder,
-        IPlayerCharacterAnimationControllerHolder,
         IIsGroundedControllerHolder,
-        IHealthControllerHolder,
         IInteractorHolder,
         IFallingSpeedControllerHolder,
         IVehicleControllerHolder
@@ -36,13 +28,7 @@ namespace Game.Gameplay.PlayerCharacter
         [field: SerializeField]
         public SkillsInventory SkillsInventory { get; private set; }
         [field: SerializeField]
-        public EffectsController EffectsController { get; private set; }
-        [field: SerializeField]
-        public PlayerCharacterAnimationController PlayerCharacterAnimationController { get; private set; }
-        [field: SerializeField]
         public IsGroundedController IsGroundedController { get; private set; }
-        [field: SerializeField]
-        public HealthController HealthController { get; private set; }
         [field: SerializeField]
         public Interactor Interactor { get; private set; }
         [field: SerializeField]
@@ -53,9 +39,12 @@ namespace Game.Gameplay.PlayerCharacter
         [field: Header("Gameplay Rules Handlers")]
         [field: SerializeField]
         public FallingDamageHandler FallingDamageHandler { get; private set; }
-        
-        private void Awake()
+
+
+        protected override void SetUpDependencies()
         {
+            base.SetUpDependencies();
+            
             // Initializing Controllers
             IsGroundedController.SetRelativeSource(Rigidbody.transform);
             FallingSpeedController.SetDependencies(IsGroundedController, MovementController.Blackboard);
@@ -65,14 +54,8 @@ namespace Game.Gameplay.PlayerCharacter
             
             // Initializing Rules Handlers
             FallingDamageHandler.SetDependencies(IsGroundedController, FallingSpeedController, HealthController);
-        }
 
-        protected override void OnNetworkPostSpawn()
-        {
-            base.OnNetworkPostSpawn();
-
-            if (IsOwner)
-                LocalPlayerController.Instance.AssignCharacter(this);
+            Debug.Log($"Default player moteor's dependencies initialized.");
         }
     }
 }

@@ -40,6 +40,8 @@ namespace Game.Gameplay.PlayerCharacter.Movement
         {
             if (!IsOwner)
                 return;
+            if (!m_relativeSource)
+                return;
             
             var isGrounded = false;
             for (int i = 0; i < m_checkersData.Count; i++)

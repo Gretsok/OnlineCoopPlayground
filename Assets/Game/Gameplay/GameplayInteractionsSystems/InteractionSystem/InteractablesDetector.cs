@@ -26,6 +26,9 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem
         
         public Interactable GetInteractableToInteractWith()
         {
+            if (!Source)
+                return null;
+            
             // We get all the interactables in sphere
             List<Interactable> interactables = new List<Interactable>();
             var size = Physics.OverlapSphereNonAlloc((Source ? Source : transform).TransformPoint(m_centerOffset), m_radius, m_detectedColliders, m_layerMask, QueryTriggerInteraction.Collide);
@@ -50,7 +53,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem
         public List<Interactable> FilterOutNonForwardInteractables(List<Interactable> a_interactables)
         {
             List<Interactable> outputInteractables = a_interactables.ToList();
-
+            
             var forward = Source.forward;
             
             for (int i = 0; i < a_interactables.Count; i++)

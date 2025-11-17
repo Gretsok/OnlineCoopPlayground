@@ -12,20 +12,18 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
         ISkillCasterHolder,
         ISkillsInventoryHolder, 
         IEffectsControllerHolder,
-        IPlayerCharacterAnimationControllerHolder,
         IIsGroundedControllerHolder
     {
         [field: SerializeField]
-        public PlayerCharacter PlayerCharacter { get; private set; }
+        public DefaultPlayerMotor DefaultPlayerMotor { get; private set; }
 
-        public PlayerCharacterMovementController MovementController => PlayerCharacter.MovementController;
-        public Rigidbody Rigidbody => PlayerCharacter.Rigidbody;
-        public SkillCaster SkillCaster => PlayerCharacter.SkillCaster;
-        public SkillsInventory SkillsInventory => PlayerCharacter.SkillsInventory;
-        public EffectsController EffectsController => PlayerCharacter.EffectsController;
-        public PlayerCharacterAnimationController PlayerCharacterAnimationController =>
-            PlayerCharacter.PlayerCharacterAnimationController;
+        public PlayerCharacterMovementController MovementController => DefaultPlayerMotor.MovementController;
+        public Rigidbody Rigidbody => DefaultPlayerMotor.Rigidbody;
+        public SkillCaster SkillCaster => DefaultPlayerMotor.SkillCaster;
+        public SkillsInventory SkillsInventory => DefaultPlayerMotor.SkillsInventory;
+        public EffectsController EffectsController => DefaultPlayerMotor.EffectsController;
 
-        public IsGroundedController IsGroundedController => PlayerCharacter.IsGroundedController;
+
+        public IsGroundedController IsGroundedController => DefaultPlayerMotor.IsGroundedController;
     }
 }

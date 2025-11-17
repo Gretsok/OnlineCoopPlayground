@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.PlayerCharacter.Movement.Data
 {
-    [CreateAssetMenu(fileName = "PlayerCharacterMovementData", menuName = "Game/Playground/PlayerCharacter/MovementData")]
+    [CreateAssetMenu(fileName = "PlayerCharacterMovementData", menuName = "Game/Playground/DefaultPlayerMotor/MovementData")]
     public class DefaultMovementDataAsset : ScriptableObject
     {
         [field: SerializeField]

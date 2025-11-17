@@ -13,10 +13,15 @@ namespace Game.Gameplay.GameplayInteractionsSystems.HealthHandling.HUD
 
         private void Update()
         {
-            if (!M_LocalCharacter)
+            if (!LocalMotor)
                 return;
-
-            var healthController = M_LocalCharacter.HealthController;
+            if (LocalMotor is not IHealthControllerHolder healthControllerHolder)
+                return;
+            
+            var healthController = healthControllerHolder.HealthController;
+            if (!healthController)
+                return;
+            
             m_healthText.text = healthController.CurrentHealth.ToString();
             var anchorTemp = m_healthBar.anchorMax;
             anchorTemp.x = (float) healthController.CurrentHealth / healthController.MaxHealth;

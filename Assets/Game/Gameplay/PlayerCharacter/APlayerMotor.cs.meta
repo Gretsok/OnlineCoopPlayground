@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 8ed4a4e8396b4d4d9f8e66bed6fb7775
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - <CharacterPawnAnchorPrefab>k__BackingField: {fileID: 3020935327278452984, guid: f979971c94866cf4e9ca9ffd09b30440, type: 3}
+  - <PlayerCharacterPawnPrefab>k__BackingField: {fileID: 8356032578119948126, guid: 26598cac57765f043832e2086abb9348, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

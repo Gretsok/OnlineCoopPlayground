@@ -41,18 +41,12 @@ namespace Game.Gameplay.PlayerCharacter.FallingDamage
             m_fallingSpeedController = a_fallingSpeedController;
             m_healthController = a_healthController;
 
-        }
-
-        protected override void OnNetworkPostSpawn()
-        {
-            base.OnNetworkPostSpawn();
-            
             if (!IsOwner)
                 return;
             
             m_isGroundedController.OnGrounded_OwnerCalled += HandleGrounded_OwnerCalled;
         }
-
+        
         public override void OnNetworkPreDespawn()
         {
             base.OnNetworkPreDespawn();

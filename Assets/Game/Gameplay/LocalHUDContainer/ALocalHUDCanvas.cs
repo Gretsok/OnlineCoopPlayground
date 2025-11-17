@@ -1,24 +1,26 @@
 using System.Collections;
 using Game.Gameplay.Controls;
+using Game.Gameplay.PlayerCharacter;
+using Game.Gameplay.PlayerCharacter.Implementations.Default;
 using UnityEngine;
 
 namespace Game.Gameplay.LocalHUDContainer
 {
     public class ALocalHUDCanvas : MonoBehaviour
     {
-        protected PlayerCharacter.PlayerCharacter M_LocalCharacter { get; private set; }
+        protected APlayerMotor LocalMotor { get; private set; }
         
         IEnumerator Start()
         {
             var localPlayerController = LocalPlayerController.Instance;
-            yield return new WaitUntil(() => localPlayerController.AssignedCharacter != null);
-            localPlayerController.OnCharacterAssigned += HandleNewCharacterAssigned;
-            HandleNewCharacterAssigned(localPlayerController);
+            yield return new WaitUntil(() => localPlayerController.DefaultLocalPlayerInputProcessor.AssignedMotor != null);
+            localPlayerController.DefaultLocalPlayerInputProcessor.OnCharacterAssigned += HandleNewCharacterAssigned;
+            HandleNewCharacterAssigned(localPlayerController.DefaultLocalPlayerInputProcessor);
         }
 
-        private void HandleNewCharacterAssigned(LocalPlayerController a_localPlayerController)
+        private void HandleNewCharacterAssigned(DefaultLocalPlayerInputProcessor a_defaultLocalPlayerInputProcessor)
         {
-            M_LocalCharacter = a_localPlayerController.AssignedCharacter;
+            LocalMotor = a_defaultLocalPlayerInputProcessor.AssignedMotor;
         }
     }
 }

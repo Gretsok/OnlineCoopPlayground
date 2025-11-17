@@ -2,7 +2,7 @@ using Game.Gameplay.LocalHUDContainer;
 using TMPro;
 using UnityEngine;
 
-namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
+namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeed.FallingSpeedHUD
 {
     public class FallingSpeedHUDCanvasCanvas : ALocalHUDCanvas
     {
@@ -21,17 +21,21 @@ namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
 
         private void Update()
         {
-            if (!M_LocalCharacter)
+            if (!LocalMotor)
+                return;
+            
+            if (LocalMotor is not IFallingSpeedControllerHolder fallingSpeedControllerHolder)
+                return;
+            if (LocalMotor is not IIsGroundedControllerHolder isGroundedControllerHolder)
                 return;
 
-            var verticalSpeed = M_LocalCharacter.FallingSpeedController.VerticalSpeed;
-            if (M_LocalCharacter.IsGroundedController.IsGrounded || verticalSpeed > 0)
+            var verticalSpeed = fallingSpeedControllerHolder.FallingSpeedController.VerticalSpeed;
+            if (isGroundedControllerHolder.IsGroundedController.IsGrounded || verticalSpeed > 0)
             {
                 m_container.SetActive(false);
                 return;
             }
             m_container.SetActive(true);
-            
             
             m_fallingSpeedText.text = $"{verticalSpeed:0} m/s";
             var anchorTemp = m_fallingSpeedFiller.anchorMin;

@@ -15,18 +15,13 @@ namespace Game.Gameplay.PlayerCharacter.Movement
         {
             m_isGroundedController = a_isGroundedController;
             m_movementBlackBoard = a_movementBlackBoard;
-        }
-
-        protected override void OnNetworkPostSpawn()
-        {
-            base.OnNetworkPostSpawn();
-
+            
             if (!IsOwner)
                 return;
             
             m_movementBlackBoard.OnJumpStarted_OwnerCalled += HandleJumpStarted_OwnerCalled;
         }
-
+        
 
         private readonly NetworkVariable<float> m_verticalSpeed = 
             new NetworkVariable<float>(readPerm: NetworkVariableReadPermission.Everyone, 
@@ -53,7 +48,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement
                 return;
             if (!IsSpawned)
                 return;
-            if (m_movementBlackBoard.IsBlocked)
+            if (m_movementBlackBoard?.IsBlocked ?? true)
                 return;
 
             if (m_isGroundedController.IsGrounded)
