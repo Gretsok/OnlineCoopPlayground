@@ -1,24 +1,28 @@
 using System;
-using Game.Gameplay.CameraSystem;
-using Game.Gameplay.PlayerCharacter.Implementations.Default;
+using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
 using Game.Networking;
-using Game.Playground.Controls;
-using Tools.Utils;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Game.Gameplay.Controls
+namespace Game.Gameplay.LocalControls
 {
     public class LocalPlayerController : MonoBehaviour
     {
         [field: SerializeField]
         public DefaultLocalPlayerInputProcessor DefaultLocalPlayerInputProcessor { get; private set; }
+        
+        public ALocalPlayerInputProcessor CurrentLocalPlayerInputProcessor { get; private set; }
+        
         public static LocalPlayerController Instance { get; private set; }
         public AbstractConnectedClientObject LocalClient { get; private set; }
         
         private void Awake()
         {
             Instance = this;
+        }
+
+        private void Start()
+        {
+            SwitchToProcessor(DefaultLocalPlayerInputProcessor);
         }
 
         public void AssignClient(AbstractConnectedClientObject a_client)
@@ -32,5 +36,13 @@ namespace Game.Gameplay.Controls
             LocalClient = a_client;
         }
 
+        public void SwitchToProcessor(ALocalPlayerInputProcessor a_localPlayerInputProcessor)
+        {
+            if (CurrentLocalPlayerInputProcessor)
+                CurrentLocalPlayerInputProcessor.Deactivate();
+            CurrentLocalPlayerInputProcessor = a_localPlayerInputProcessor;
+            if (CurrentLocalPlayerInputProcessor)
+                CurrentLocalPlayerInputProcessor.Activate();
+        }
     }
 }

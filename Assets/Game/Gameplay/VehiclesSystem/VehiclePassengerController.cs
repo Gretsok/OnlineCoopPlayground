@@ -6,7 +6,7 @@ namespace Game.Gameplay.VehiclesSystem
     /// <summary>
     /// Represents something that go in a vehicle. Mostly a player.
     /// </summary>
-    public class VehicleController : NetworkBehaviour
+    public class VehiclePassengerController : NetworkBehaviour
     {
         private readonly NetworkVariable<NetworkBehaviourReference> m_currentVehicle =
             new NetworkVariable<NetworkBehaviourReference>();
@@ -38,7 +38,7 @@ namespace Game.Gameplay.VehiclesSystem
             }
         }
 
-        private void HandleCharacterKickedServerCalled(Vehicle a_vehicle, VehicleController a_vehicleController)
+        private void HandleCharacterKickedServerCalled(Vehicle a_vehicle, VehiclePassengerController a_vehiclePassengerController)
         {
             if (!IsServer)
             {
@@ -54,7 +54,7 @@ namespace Game.Gameplay.VehiclesSystem
                 return;
             }
 
-            if (a_vehicleController != this)
+            if (a_vehiclePassengerController != this)
                 return;
             
             m_currentVehicle.Value = null;

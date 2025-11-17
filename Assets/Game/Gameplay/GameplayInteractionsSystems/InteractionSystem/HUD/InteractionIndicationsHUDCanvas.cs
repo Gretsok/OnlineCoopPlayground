@@ -27,6 +27,9 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem.HUD
         public void DisplayUsing(DisplayIndicationInteractableComponent a_interactableComponent)
         {
             m_registeredInteractableComponent = a_interactableComponent;
+            var viewportPosition = m_registeredInteractableComponent.GetRequestedViewportPosition();
+            m_indicationWidget.anchorMax = viewportPosition;
+            m_indicationWidget.anchorMin = viewportPosition;
             m_indicationWidget.gameObject.SetActive(true);
         }
 
@@ -36,7 +39,9 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem.HUD
             m_indicationWidget.gameObject.SetActive(false);
         }
 
-        private void LateUpdate()
+        // We update the position in fixed update to avoid stutters
+        // due to the character and camera movement also being in the FixedUpdate
+        private void FixedUpdate()
         {
             if (!m_registeredInteractableComponent)
                 return;

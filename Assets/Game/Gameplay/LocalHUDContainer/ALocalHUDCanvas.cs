@@ -1,7 +1,7 @@
 using System.Collections;
-using Game.Gameplay.Controls;
+using Game.Gameplay.LocalControls;
 using Game.Gameplay.PlayerCharacter;
-using Game.Gameplay.PlayerCharacter.Implementations.Default;
+using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
 using UnityEngine;
 
 namespace Game.Gameplay.LocalHUDContainer

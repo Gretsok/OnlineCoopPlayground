@@ -2,6 +2,7 @@
 using Game.Gameplay.GameplayInteractionsSystems.HealthHandling;
 using Game.Gameplay.PlayerCharacter.Animation;
 using Game.Gameplay.PlayerCharacter.CharacterImplementations;
+using Game.Gameplay.VehiclesSystem;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ namespace Game.Gameplay.PlayerCharacter
         IHealthControllerHolder,
         IEffectsControllerHolder,
         IPlayerCharacterAnimationControllerHolder,
-        IPlayerCharacterGameDataRetrieverAndInjectorHolder
+        IPlayerCharacterGameDataRetrieverAndInjectorHolder,
+        IVehiclePassengerControllerHolder
     {
         [field: SerializeField]
         public NetworkObject CharacterPawnAnchorPrefab { get; private set; }
@@ -24,11 +26,12 @@ namespace Game.Gameplay.PlayerCharacter
         public EffectsController EffectsController => PlayerCharacterPawn?.EffectsController;
         public PlayerCharacterAnimationController PlayerCharacterAnimationController => PlayerCharacterPawn?.PlayerCharacterAnimationController;
         public PlayerCharacterGameDataRetrieverAndInjector PlayerCharacterGameDataRetrieverAndInjector => PlayerCharacterPawn?.PlayerCharacterGameDataRetrieverAndInjector;
-        
+        public VehiclePassengerController VehiclePassengerController => PlayerCharacterPawn?.VehiclePassengerController;
         
         protected override void OnNetworkPostSpawn()
         {
             base.OnNetworkPostSpawn();
+            
             if (IsServer)
             {
                 CharacterPawnAnchor = Instantiate(CharacterPawnAnchorPrefab);
@@ -45,7 +48,6 @@ namespace Game.Gameplay.PlayerCharacter
             {
                 RequestReferences_ServerRpc(NetworkManager.LocalClientId);
             }
-
         }
 
         [Rpc(SendTo.Server)]
@@ -82,6 +84,7 @@ namespace Game.Gameplay.PlayerCharacter
         protected virtual void SetUpDependencies()
         {
             PlayerCharacterGameDataRetrieverAndInjector.SetDependencies(this);
+            VehiclePassengerController.SetDependencies(this);
         }
     }
 }

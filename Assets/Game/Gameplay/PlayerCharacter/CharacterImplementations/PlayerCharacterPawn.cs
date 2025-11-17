@@ -1,6 +1,7 @@
 using Game.Gameplay.GameplayInteractionsSystems.EffectsSystem;
 using Game.Gameplay.GameplayInteractionsSystems.HealthHandling;
 using Game.Gameplay.PlayerCharacter.Animation;
+using Game.Gameplay.VehiclesSystem;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,7 +11,8 @@ namespace Game.Gameplay.PlayerCharacter.CharacterImplementations
         IHealthControllerHolder,
         IEffectsControllerHolder,
         IPlayerCharacterAnimationControllerHolder,
-        IPlayerCharacterGameDataRetrieverAndInjectorHolder
+        IPlayerCharacterGameDataRetrieverAndInjectorHolder,
+        IVehiclePassengerControllerHolder
     {
         [field: SerializeField]
         public HealthController HealthController { get; private set; }
@@ -22,5 +24,7 @@ namespace Game.Gameplay.PlayerCharacter.CharacterImplementations
         public PlayerCharacterGameDataRetrieverAndInjector PlayerCharacterGameDataRetrieverAndInjector { get;
             private set;
         }
+        [field: SerializeField]
+        public VehiclePassengerController VehiclePassengerController { get; private set; }
     }
 }

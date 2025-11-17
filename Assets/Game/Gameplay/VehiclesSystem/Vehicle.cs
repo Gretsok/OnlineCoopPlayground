@@ -11,7 +11,7 @@ namespace Game.Gameplay.VehiclesSystem
     /// </summary>
     public class Vehicle : NetworkBehaviour
     {
-        public delegate bool DCondition(VehicleController a_controller);
+        public delegate bool DCondition(VehiclePassengerController a_passengerController);
 
         private readonly List<DCondition> m_conditions = new List<DCondition>();
         
@@ -27,20 +27,20 @@ namespace Game.Gameplay.VehiclesSystem
         }
         
         /// <summary>
-        /// Should only be called from <see cref="VehicleController"/>
+        /// Should only be called from <see cref="VehiclePassengerController"/>
         /// </summary>
-        /// <param name="a_vehicleController"></param>
+        /// <param name="a_vehiclePassengerController"></param>
         /// <returns></returns>
-        public bool CanHopIn_ForServer(VehicleController a_vehicleController)
+        public bool CanHopIn_ForServer(VehiclePassengerController a_vehiclePassengerController)
         {
-            if (!a_vehicleController)
+            if (!a_vehiclePassengerController)
                 return false;
             
             for (int i = 0; i < m_conditions.Count; i++)
             {
                 var condition = m_conditions[i];
 
-                if (!condition(a_vehicleController))
+                if (!condition(a_vehiclePassengerController))
                     return false;
             }
             return true;
@@ -64,41 +64,41 @@ namespace Game.Gameplay.VehiclesSystem
             RemoveCondition(CharacterNotInThisVehicle);
         }
 
-        private bool IsMaxCharactersInVehicleNotReached(VehicleController a_controller)
+        private bool IsMaxCharactersInVehicleNotReached(VehiclePassengerController a_passengerController)
         {
             return m_charactersInVehicle.Count < m_maxCharactersInVehicle;
         }
 
-        private bool CharacterNotInThisVehicle(VehicleController a_controller)
+        private bool CharacterNotInThisVehicle(VehiclePassengerController a_passengerController)
         {
-            return !m_charactersInVehicle.Contains(a_controller);
+            return !m_charactersInVehicle.Contains(a_passengerController);
         }
 
         /// <summary>
-        /// Should only be called from <see cref="VehicleController"/>
+        /// Should only be called from <see cref="VehiclePassengerController"/>
         /// </summary>
-        /// <param name="a_vehicleController"></param>
-        public bool RequestCharacterToJoin_ForServer(VehicleController a_vehicleController)
+        /// <param name="a_vehiclePassengerController"></param>
+        public bool RequestCharacterToJoin_ForServer(VehiclePassengerController a_vehiclePassengerController)
         {
-            if (!CanHopIn_ForServer(a_vehicleController))
+            if (!CanHopIn_ForServer(a_vehiclePassengerController))
                 return false;
             
             
-            m_charactersInVehicle.Add(a_vehicleController);
-            HandleCharacterJoined_ServerCalled(a_vehicleController);
-            OnCharacterJoined_ServerCalled?.Invoke(a_vehicleController);
+            m_charactersInVehicle.Add(a_vehiclePassengerController);
+            HandleCharacterJoined_ServerCalled(a_vehiclePassengerController);
+            OnCharacterJoined_ServerCalled?.Invoke(a_vehiclePassengerController);
             m_onCharacterJoined_ServerCalled?.Invoke();
-            HandleCharacterJoined_ClientsRpc(a_vehicleController.NetworkObject, 
-                a_vehicleController.NetworkObject.GetNetworkBehaviourOrderIndex(a_vehicleController));
+            HandleCharacterJoined_ClientsRpc(a_vehiclePassengerController.NetworkObject, 
+                a_vehiclePassengerController.NetworkObject.GetNetworkBehaviourOrderIndex(a_vehiclePassengerController));
             
-            Debug.Log($"[SERVER] {a_vehicleController.Parent.name} joined vehicle {gameObject.name}.", a_vehicleController.Parent.gameObject);
+            Debug.Log($"[SERVER] {a_vehiclePassengerController.Parent.name} joined vehicle {gameObject.name}.", a_vehiclePassengerController.Parent.gameObject);
             return true;
         }
 
         [SerializeField]
         private UnityEvent m_onCharacterJoined_ServerCalled;
-        public event Action<VehicleController> OnCharacterJoined_ServerCalled;
-        protected virtual void HandleCharacterJoined_ServerCalled(VehicleController a_vehicleController)
+        public event Action<VehiclePassengerController> OnCharacterJoined_ServerCalled;
+        protected virtual void HandleCharacterJoined_ServerCalled(VehiclePassengerController a_vehiclePassengerController)
         { }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -107,7 +107,7 @@ namespace Game.Gameplay.VehiclesSystem
         {
             if (!a_networkObjectReference.TryGet(out NetworkObject networkObject))
                 return;
-            var vehicleController = networkObject.GetNetworkBehaviourAtOrderIndex(a_componentOrderIndex) as VehicleController;
+            var vehicleController = networkObject.GetNetworkBehaviourAtOrderIndex(a_componentOrderIndex) as VehiclePassengerController;
             
             HandleCharacterJoined_ClientsCalled(vehicleController);
             OnCharacterJoined_ClientsCalled?.Invoke(vehicleController);
@@ -116,44 +116,44 @@ namespace Game.Gameplay.VehiclesSystem
         
         [SerializeField]
         private UnityEvent m_onCharacterJoined_ClientsCalled;
-        public event Action<VehicleController> OnCharacterJoined_ClientsCalled;
-        protected virtual void HandleCharacterJoined_ClientsCalled(VehicleController a_vehicleController)
+        public event Action<VehiclePassengerController> OnCharacterJoined_ClientsCalled;
+        protected virtual void HandleCharacterJoined_ClientsCalled(VehiclePassengerController a_vehiclePassengerController)
         { }
 
-        public event Action<Vehicle, VehicleController> OnCharacterKicked_ServerCalled;
-        public void KickCharacterFromVehicle_ForServer(VehicleController a_vehicleController)
+        public event Action<Vehicle, VehiclePassengerController> OnCharacterKicked_ServerCalled;
+        public void KickCharacterFromVehicle_ForServer(VehiclePassengerController a_vehiclePassengerController)
         {
             if (!IsServer)
                 return;
             
-            if (!m_charactersInVehicle.Contains(a_vehicleController))
+            if (!m_charactersInVehicle.Contains(a_vehiclePassengerController))
             {
                 Debug.LogError($"[SERVER] Cannot kick this character from this vehicle: The character is not found in the vehicle.", 
-                    a_vehicleController.gameObject);
+                    a_vehiclePassengerController.gameObject);
                 return;
             }
             
-            m_charactersInVehicle.Remove(a_vehicleController);
-            HandleCharacterLeft_ForServer(a_vehicleController);
+            m_charactersInVehicle.Remove(a_vehiclePassengerController);
+            HandleCharacterLeft_ForServer(a_vehiclePassengerController);
             
-            OnCharacterKicked_ServerCalled?.Invoke(this, a_vehicleController);
+            OnCharacterKicked_ServerCalled?.Invoke(this, a_vehiclePassengerController);
         }
         
-        private void HandleCharacterLeft_ForServer(VehicleController a_vehicleController)
+        private void HandleCharacterLeft_ForServer(VehiclePassengerController a_vehiclePassengerController)
         {
-            HandleCharacterLeft_ServerCalled(a_vehicleController);
-            OnCharacterLeft_ServerCalled?.Invoke(a_vehicleController);
+            HandleCharacterLeft_ServerCalled(a_vehiclePassengerController);
+            OnCharacterLeft_ServerCalled?.Invoke(a_vehiclePassengerController);
             m_onCharacterLeft_ServerCalled?.Invoke();
-            HandleCharacterLeft_ClientsRpc(a_vehicleController.NetworkObject, 
-                a_vehicleController.NetworkObject.GetNetworkBehaviourOrderIndex(a_vehicleController));
+            HandleCharacterLeft_ClientsRpc(a_vehiclePassengerController.NetworkObject, 
+                a_vehiclePassengerController.NetworkObject.GetNetworkBehaviourOrderIndex(a_vehiclePassengerController));
             
-            Debug.Log($"[SERVER] {a_vehicleController.Parent.name} left vehicle {gameObject.name}.", a_vehicleController.Parent.gameObject);
+            Debug.Log($"[SERVER] {a_vehiclePassengerController.Parent.name} left vehicle {gameObject.name}.", a_vehiclePassengerController.Parent.gameObject);
         }
         
         [SerializeField]
         private UnityEvent m_onCharacterLeft_ServerCalled;
-        public event Action<VehicleController> OnCharacterLeft_ServerCalled;
-        protected virtual void HandleCharacterLeft_ServerCalled(VehicleController a_vehicleController)
+        public event Action<VehiclePassengerController> OnCharacterLeft_ServerCalled;
+        protected virtual void HandleCharacterLeft_ServerCalled(VehiclePassengerController a_vehiclePassengerController)
         { }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -162,7 +162,7 @@ namespace Game.Gameplay.VehiclesSystem
         {
             if (!a_networkObjectReference.TryGet(out NetworkObject networkObject))
                 return;
-            var vehicleController = networkObject.GetNetworkBehaviourAtOrderIndex(a_componentOrderIndex) as VehicleController;
+            var vehicleController = networkObject.GetNetworkBehaviourAtOrderIndex(a_componentOrderIndex) as VehiclePassengerController;
             
             HandleCharacterLeft_ClientsCalled(vehicleController);
             OnCharacterLeft_ClientsCalled?.Invoke(vehicleController);
@@ -171,8 +171,8 @@ namespace Game.Gameplay.VehiclesSystem
         
         [SerializeField]
         private UnityEvent m_onCharacterLeft_ClientsCalled;
-        public event Action<VehicleController> OnCharacterLeft_ClientsCalled;
-        protected virtual void HandleCharacterLeft_ClientsCalled(VehicleController a_vehicleController)
+        public event Action<VehiclePassengerController> OnCharacterLeft_ClientsCalled;
+        protected virtual void HandleCharacterLeft_ClientsCalled(VehiclePassengerController a_vehiclePassengerController)
         { }
     }
 }

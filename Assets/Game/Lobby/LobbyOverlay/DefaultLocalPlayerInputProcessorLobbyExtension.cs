@@ -1,26 +1,23 @@
-using Game.Gameplay.Controls;
-using Game.Gameplay.PlayerCharacter.Implementations.Default;
+using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
 using Tools.UIManagement;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Game.Lobby.LobbyOverlay
 {
-    public class LocalPlayerControllerLobbyExtension : MonoBehaviour
+    public class DefaultLocalPlayerInputProcessorLobbyExtension : MonoBehaviour
     {
-        private LocalPlayerController m_localPlayerController;
+        private DefaultLocalPlayerInputProcessor m_inputProcessor;
         private void Awake()
         {
-            m_localPlayerController = GetComponent<LocalPlayerController>();
+            m_inputProcessor = GetComponent<DefaultLocalPlayerInputProcessor>();
 
-            m_localPlayerController.DefaultLocalPlayerInputProcessor.OnInputActionsInitialized += HandleInputActionsInitialized;
+            m_inputProcessor.OnInputActionsInitialized += HandleInputActionsInitialized;
         }
 
         private void OnDestroy()
         {
-            m_localPlayerController.DefaultLocalPlayerInputProcessor.Actions.Lobby.ToggleLobbyMenu.started -= HandleToggleLobbyMenuStarted;
-
-            m_localPlayerController.DefaultLocalPlayerInputProcessor.OnInputActionsInitialized -= HandleInputActionsInitialized;
+            m_inputProcessor.OnInputActionsInitialized -= HandleInputActionsInitialized;
         }
 
         private void HandleInputActionsInitialized(DefaultLocalPlayerInputProcessor a_defaultLocalPlayerInputProcessor)

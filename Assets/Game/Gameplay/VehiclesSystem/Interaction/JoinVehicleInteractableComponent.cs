@@ -32,12 +32,12 @@ namespace Game.Gameplay.VehiclesSystem.Interaction
 
         private bool CanInteractorHopInVehicle(Interactor a_interactor)
         {
-            return m_vehicle.CanHopIn_ForServer((a_interactor.Source as IVehicleControllerHolder)?.VehicleController);
+            return m_vehicle.CanHopIn_ForServer((a_interactor.Source as IVehiclePassengerControllerHolder)?.VehiclePassengerController);
         }
 
         private void HandleInteractionRequested_ServerCalled(Interactable a_arg1, Interactor a_arg2)
         {
-            (a_arg2.Source as IVehicleControllerHolder).VehicleController.JoinVehicle_ForServer(m_vehicle);
+            (a_arg2.Source as IVehiclePassengerControllerHolder).VehiclePassengerController.JoinVehicle_ForServer(m_vehicle);
         }
     }
 }

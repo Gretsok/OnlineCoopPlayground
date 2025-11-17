@@ -3,10 +3,9 @@ using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
 using Game.Gameplay.PlayerCharacter.FallingDamage;
 using Game.Gameplay.PlayerCharacter.Movement;
 using Game.Gameplay.PlayerCharacter.SkillsIntegration;
-using Game.Gameplay.VehiclesSystem;
 using UnityEngine;
 
-namespace Game.Gameplay.PlayerCharacter
+namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
 {
     public class DefaultPlayerMotor : APlayerMotor, 
         IPlayerCharacterMovementControllerHolder, 
@@ -15,8 +14,7 @@ namespace Game.Gameplay.PlayerCharacter
         ISkillsInventoryHolder, 
         IIsGroundedControllerHolder,
         IInteractorHolder,
-        IFallingSpeedControllerHolder,
-        IVehicleControllerHolder
+        IFallingSpeedControllerHolder
     {
         [field: Header("Core Character Controllers")]
         [field: SerializeField]
@@ -33,8 +31,6 @@ namespace Game.Gameplay.PlayerCharacter
         public Interactor Interactor { get; private set; }
         [field: SerializeField]
         public FallingSpeedController FallingSpeedController { get; private set; }
-        [field: SerializeField]
-        public VehicleController VehicleController { get; private set; }
 
         [field: Header("Gameplay Rules Handlers")]
         [field: SerializeField]
@@ -50,12 +46,11 @@ namespace Game.Gameplay.PlayerCharacter
             FallingSpeedController.SetDependencies(IsGroundedController, MovementController.Blackboard);
             MovementController.SetDependencies(Rigidbody, FallingSpeedController, IsGroundedController);
             Interactor.SetSource(this);
-            VehicleController.SetDependencies(this);
             
             // Initializing Rules Handlers
             FallingDamageHandler.SetDependencies(IsGroundedController, FallingSpeedController, HealthController);
 
-            Debug.Log($"Default player moteor's dependencies initialized.");
+            Debug.Log($"Default player motor's dependencies initialized.");
         }
     }
 }

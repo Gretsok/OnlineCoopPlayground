@@ -1,12 +1,11 @@
 ﻿using System;
 using Game.Gameplay.CameraSystem;
 using Game.Gameplay.LocalControls;
-using Game.Playground.Controls;
 using Tools.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Game.Gameplay.PlayerCharacter.Implementations.Default
+namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
 {
     public class DefaultLocalPlayerInputProcessor : ALocalPlayerInputProcessor
     {
@@ -34,18 +33,15 @@ namespace Game.Gameplay.PlayerCharacter.Implementations.Default
             
             m_cameraController.AssignCameraTarget(a_motor.transform);
         }
-        
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+
+        protected override void HandleActivation()
         {
+            base.HandleActivation();
             if (!m_cameraController)
                 m_cameraController = CameraController.Instance;            
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            
-            Actions = new PlayerActions();
-            Actions.Enable();
 
             Actions.Movement.Jump.started += HandleJumpInputStarted;
             Actions.Movement.Jump.canceled += HandleJumpInputCanceled;
@@ -59,13 +55,6 @@ namespace Game.Gameplay.PlayerCharacter.Implementations.Default
         
             OnInputActionsInitialized?.Invoke(this);
         }
-        
-        private void OnDestroy()
-        {
-            Actions.Disable();
-            Actions.Dispose();
-        }
-        
         private void HandleJumpInputStarted(InputAction.CallbackContext a_obj)
         {
             if (!AssignedMotor)
@@ -110,12 +99,9 @@ namespace Game.Gameplay.PlayerCharacter.Implementations.Default
             AssignedMotor.SkillCaster.TryToTriggerSkill_ForOwner(AssignedMotor.SkillsInventory.GetSkillByIndex(2));
         }
 
-        private void Update()
+        protected override void UpdateInput()
         {
-            if (Actions == null) 
-                return;
-            /*if (!Application.isFocused)
-            return;*/
+            base.UpdateInput();
             if (!AssignedMotor)
                 return;
 

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
+using Game.Gameplay.VehiclesSystem;
 using Game.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,6 +11,12 @@ namespace Game.Gameplay.CharactersManagement
 {
     public class PlayersCharactersManager : NetworkBehaviour
     {
+        public enum ECharacterType
+        {
+            Default = 0,
+            Vehicle = 1
+        }
+        
         public static PlayersCharactersManager Instance { get; private set; }
 
         private void Awake()
@@ -20,66 +28,16 @@ namespace Game.Gameplay.CharactersManagement
             }
             Instance = this;
         }
-
-
-        [FormerlySerializedAs("m_characterPrefab")]
+        
         [SerializeField]
-        private PlayerCharacter.DefaultPlayerMotor m_motorPrefab;
+        private DefaultPlayerMotor m_defaultMotorPrefab;
+        [SerializeField]
+        private VehiclePlayerMotor m_vehicleMotorPrefab;
         
-        private Dictionary<ulong, PlayerCharacter.DefaultPlayerMotor> m_characters = new();
+        private Dictionary<ulong, PlayerCharacter.APlayerMotor> m_characters = new();
         
-        private NetworkManager m_networkManager;
-        
-        protected override void OnNetworkPostSpawn()
-        {
-            base.OnNetworkPostSpawn();
-            m_networkManager = NetworkManager.Singleton;
-/*
-            if (!m_networkManager.IsServer)
-                return;
 
-            HandleServerStarted();
-            m_networkManager.OnClientConnectedCallback += HandleClientConnected;
-            m_networkManager.OnClientDisconnectCallback += HandleClientDisconnected;*/
-        }
         
-    /*    private void HandleServerStarted()
-        {
-            return;
-            var enumerator = m_networkManager.ConnectedClients.GetEnumerator();
-
-            Debug.Log($"[PlayersCharactersManager] OnServerStarted : Existing client count is {m_networkManager.ConnectedClients.Count}");
-            
-            while (enumerator.MoveNext())
-            {
-                var client = enumerator.Current;
-                if (m_characters.ContainsKey(client.Key))
-                    continue;
-                
-                Debug.Log($"[PlayersCharactersManager] Adding character with Client ID {client.Key}");
-                
-                var character = Instantiate(m_motorPrefab, transform.position, Quaternion.identity);
-                character.NetworkObject.SpawnWithOwnership(client.Key);
-                m_characters.Add(client.Key, character);
-            }
-        }
-        
-        private void HandleClientConnected(ulong a_clientID)
-        {
-            return;
-            Debug.Log($"[PlayersCharactersManager] OnClientConnected : Client ID {a_clientID} connected");
-            InstantiateAndSpawnCharacterFor(a_clientID);
-        }
-        
-        private void HandleClientDisconnected(ulong a_clientID)
-        {
-            return;
-            if (!m_networkManager.IsListening && !m_networkManager.IsConnectedClient)
-                return;
-
-            DespawnAndDestroyCharacterOf(a_clientID);
-        }*/
-
         private event Action<PlayerCharacter.APlayerMotor> m_tempResultCallback;
         public void RetrieveCharacterFor_ForOwner(AbstractConnectedClientObject a_client, Action<PlayerCharacter.APlayerMotor> a_resultCallback)
         {
@@ -112,23 +70,20 @@ namespace Game.Gameplay.CharactersManagement
             m_tempResultCallback?.Invoke(character);
             m_tempResultCallback = null;
         }
-    
-
-
-        private PlayerCharacter.DefaultPlayerMotor InstantiateAndSpawnCharacterFor(ulong a_clientID)
+        
+        private PlayerCharacter.APlayerMotor InstantiateAndSpawnCharacterFor(ulong a_clientID, ECharacterType a_characterType = ECharacterType.Default)
         {
             if (m_characters.ContainsKey(a_clientID))
                 return m_characters[a_clientID];
                 
             Debug.Log($"[PlayersCharactersManager] Adding character with Client ID {a_clientID}");
 
-            var character = Instantiate(m_motorPrefab, transform.position, Quaternion.identity);
+            var character = Instantiate(m_defaultMotorPrefab, transform.position, Quaternion.identity);
             character.NetworkObject.SpawnWithOwnership(a_clientID);
             m_characters.Add(a_clientID, character);
             return character;
         }
-
-
+        
         public void DeleteCharacterFor_ForOwner(AbstractConnectedClientObject a_client)
         {
             if (!a_client.IsOwner)
@@ -162,10 +117,7 @@ namespace Game.Gameplay.CharactersManagement
             base.OnNetworkPreDespawn();
             if (!IsServer)
                 return;
-/*
-            m_networkManager.OnClientConnectedCallback -= HandleClientConnected;
-            m_networkManager.OnClientDisconnectCallback -= HandleClientDisconnected;
-            */
+
             var enumerator = m_characters.GetEnumerator();
             while (enumerator.MoveNext())
             {

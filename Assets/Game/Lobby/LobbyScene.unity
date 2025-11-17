@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 62923217}
   - component: {fileID: 62923218}
+  - component: {fileID: 62923219}
   m_Layer: 0
   m_Name: DefaultLocalPlayerInputProcessor
   m_TagString: Untagged
@@ -163,6 +164,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2334e734eb3042e3acc4b6db9a487397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.PlayerCharacter.Implementations.Default.DefaultLocalPlayerInputProcessor
+--- !u!114 &62923219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62923216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 980802544d9a3ac41833e6cd136abe14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerControllerLobbyExtension
 --- !u!1001 &65606499
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4257,7 +4270,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayersCharactersManager
   ShowTopMostFoldoutHeaderGroup: 1
-  m_characterPrefab: {fileID: 3440679924463110233, guid: 7672695045d889f4092315529333e565, type: 3}
+  m_defaultMotorPrefab: {fileID: 3440679924463110233, guid: 7672695045d889f4092315529333e565, type: 3}
+  m_vehicleMotorPrefab: {fileID: 3158460062421670020, guid: d519c18031e1bec4481f5c528363ed7c, type: 3}
 --- !u!114 &1185475287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5573,7 +5587,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2025015508}
   - component: {fileID: 2025015507}
-  - component: {fileID: 2025015509}
   m_Layer: 0
   m_Name: LocalPlayerController
   m_TagString: Untagged
@@ -5608,20 +5621,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 62923217}
+  - {fileID: 2062293550}
   m_Father: {fileID: 1585946373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2025015509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2025015506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 980802544d9a3ac41833e6cd136abe14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerControllerLobbyExtension
 --- !u!1001 &2055473974
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5684,6 +5686,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4874802182062810, guid: 5171d5eb12e0f184a8761aa4157f7d00, type: 3}
   m_PrefabInstance: {fileID: 2055473974}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2062293549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2062293550}
+  m_Layer: 0
+  m_Name: VehicleLocalPlayerInputProcessor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2062293550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062293549}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2025015508}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2106067350
 PrefabInstance:
   m_ObjectHideFlags: 0

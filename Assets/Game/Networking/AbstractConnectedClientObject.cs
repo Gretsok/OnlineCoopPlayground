@@ -1,7 +1,8 @@
 using System.Collections;
 using Game.Gameplay.CharactersManagement;
-using Game.Gameplay.Controls;
+using Game.Gameplay.LocalControls;
 using Game.Gameplay.PlayerCharacter;
+using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
 using Steamworks;
 using Unity.Netcode;
 using UnityEngine;
