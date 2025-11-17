@@ -7,6 +7,7 @@ using Game.Gameplay.PlayerCharacter.Animation;
 using Game.Gameplay.PlayerCharacter.FallingDamage;
 using Game.Gameplay.PlayerCharacter.Movement;
 using Game.Gameplay.PlayerCharacter.SkillsIntegration;
+using Game.Gameplay.VehiclesSystem;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -22,7 +23,8 @@ namespace Game.Gameplay.PlayerCharacter
         IIsGroundedControllerHolder,
         IHealthControllerHolder,
         IInteractorHolder,
-        IFallingSpeedControllerHolder
+        IFallingSpeedControllerHolder,
+        IVehicleControllerHolder
     {
         [field: Header("Core Character Controllers")]
         [field: SerializeField]
@@ -45,6 +47,8 @@ namespace Game.Gameplay.PlayerCharacter
         public Interactor Interactor { get; private set; }
         [field: SerializeField]
         public FallingSpeedController FallingSpeedController { get; private set; }
+        [field: SerializeField]
+        public VehicleController VehicleController { get; private set; }
 
         [field: Header("Gameplay Rules Handlers")]
         [field: SerializeField]
@@ -57,6 +61,7 @@ namespace Game.Gameplay.PlayerCharacter
             FallingSpeedController.SetDependencies(IsGroundedController, MovementController.Blackboard);
             MovementController.SetDependencies(Rigidbody, FallingSpeedController, IsGroundedController);
             Interactor.SetSource(this);
+            VehicleController.SetDependencies(this);
             
             // Initializing Rules Handlers
             FallingDamageHandler.SetDependencies(IsGroundedController, FallingSpeedController, HealthController);

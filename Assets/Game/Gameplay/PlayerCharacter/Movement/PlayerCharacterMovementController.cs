@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Gameplay.PlayerCharacter.Movement.MovementBehaviours;
 using NUnit.Framework;
 using Unity.Netcode;
@@ -15,7 +16,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement
         public DefaultMovementBehaviour DefaultMovementBehaviour { get; private set; }
         
         
-        private readonly NetworkVariable<ushort> m_currentActiveBehaviourOrderIndex = new NetworkVariable<ushort>(writePerm: NetworkVariableWritePermission.Server);
+        private readonly NetworkVariable<NetworkBehaviourReference> m_currentActiveBehaviour = new NetworkVariable<NetworkBehaviourReference>(writePerm: NetworkVariableWritePermission.Server);
         public AMovementBehaviour CurrentActiveBehaviour { get; private set; }
         
         private Rigidbody m_rigidbody;
@@ -34,20 +35,29 @@ namespace Game.Gameplay.PlayerCharacter.Movement
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            m_currentActiveBehaviourOrderIndex.OnValueChanged += HandleCurrentActiveBehaviourChanged;
+            m_currentActiveBehaviour.OnValueChanged += HandleCurrentActiveBehaviourChanged;
             if (!IsServer)
             {
-                HandleCurrentActiveBehaviourChanged(0, m_currentActiveBehaviourOrderIndex.Value);
+                HandleCurrentActiveBehaviourChanged(null, m_currentActiveBehaviour.Value);
             }
         }
 
-        private void HandleCurrentActiveBehaviourChanged(ushort a_previousValue, ushort a_newValue)
+        private void HandleCurrentActiveBehaviourChanged(NetworkBehaviourReference a_oldBehaviourReference, NetworkBehaviourReference a_newBehaviourReference)
         {
+            a_newBehaviourReference.TryGet(out AMovementBehaviour newBehaviour);
+            
+            UnityEngine.Debug.Log($"[CLIENT] About to change movement behaviour from" +
+                                  $" \"{(CurrentActiveBehaviour ? CurrentActiveBehaviour.gameObject.name : "None")}\" to " +
+                                  $" \"{(newBehaviour ? newBehaviour.gameObject.name : "None")}\".");
+            
             if (CurrentActiveBehaviour)
                 CurrentActiveBehaviour.Deactivate_ForClients();
-            CurrentActiveBehaviour = NetworkObject.GetNetworkBehaviourAtOrderIndex(a_newValue) as AMovementBehaviour;
+            CurrentActiveBehaviour = newBehaviour;
             if (CurrentActiveBehaviour)
+            {
+                CurrentActiveBehaviour.SetDefaultDependencies(Blackboard, m_rigidbody, m_isGroundedController, m_fallingSpeedController);
                 CurrentActiveBehaviour.Activate_ForClients();
+            }
         }
 
         protected override void OnNetworkPostSpawn()
@@ -56,16 +66,45 @@ namespace Game.Gameplay.PlayerCharacter.Movement
             SwitchToBehaviour_ForServer(DefaultMovementBehaviour);
         }
 
-        public void SwitchToBehaviour_ForServer(AMovementBehaviour a_behaviour)
+        private readonly List<AMovementBehaviour> m_stackedBehaviours_ServerOnly = new();
+        
+        private void SwitchToBehaviour_ForServer(AMovementBehaviour a_behaviour)
         {
             if (!IsServer)
                 return;
             
+            UnityEngine.Debug.Log($"[SERVER] About to change movement behaviour from" +
+                                  $" \"{(CurrentActiveBehaviour ? CurrentActiveBehaviour.gameObject.name : "None")}\" to " +
+                                  $" \"{(a_behaviour ? a_behaviour.gameObject.name : "None")}\".");
+            
             if (CurrentActiveBehaviour)
                 CurrentActiveBehaviour.Deactivate_ForServer();
-            m_currentActiveBehaviourOrderIndex.Value = NetworkObject.GetNetworkBehaviourOrderIndex(a_behaviour);
+            
             if (a_behaviour)
+            {
+                a_behaviour.SetDefaultDependencies(Blackboard, m_rigidbody, m_isGroundedController, m_fallingSpeedController);                
                 a_behaviour.Activate_ForServer();
+            }
+            // We change the value after the activate call because it instantly triggers clients callbacks on host.
+            m_currentActiveBehaviour.Value = a_behaviour;
+            CurrentActiveBehaviour = a_behaviour;
+
+        }
+
+        public void StackBehaviour_ForServer(AMovementBehaviour a_behaviour)
+        {
+            m_stackedBehaviours_ServerOnly.Add(a_behaviour);
+            SwitchToBehaviour_ForServer(a_behaviour);
+        }
+
+        public void UnstackBehaviour_ForServer(AMovementBehaviour a_behaviour)
+        {
+            m_stackedBehaviours_ServerOnly.Remove(a_behaviour);
+            
+            if (m_stackedBehaviours_ServerOnly.Count > 0)
+                SwitchToBehaviour_ForServer(a_behaviour);
+            else
+                SwitchToBehaviour_ForServer(DefaultMovementBehaviour);
         }
     }
 }

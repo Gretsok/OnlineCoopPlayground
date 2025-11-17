@@ -43,7 +43,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem.HUD
         {
             var cameraToUse = Camera.main;
             return cameraToUse?.WorldToViewportPoint(
-                m_indicationWorldAnchorPoint.TransformPoint(m_worldRelativeOffset)) + m_screenOffset ?? new Vector2(0.5f, 0.5f);
+                (m_indicationWorldAnchorPoint ? m_indicationWorldAnchorPoint : transform).TransformPoint(m_worldRelativeOffset)) + m_screenOffset ?? new Vector2(0.5f, 0.5f);
         }
     }
 }

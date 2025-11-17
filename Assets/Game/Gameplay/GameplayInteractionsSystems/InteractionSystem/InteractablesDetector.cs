@@ -31,7 +31,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem
             var size = Physics.OverlapSphereNonAlloc((Source ? Source : transform).TransformPoint(m_centerOffset), m_radius, m_detectedColliders, m_layerMask, QueryTriggerInteraction.Collide);
             for (int i = 0; i < size; i++)
             {
-                var interactable = m_detectedColliders[i].GetComponent<Interactable>();
+                var interactable = m_detectedColliders[i].GetComponent<IInteractableHolder>()?.LinkedInteractable;
                 if (interactable)
                     interactables.Add(interactable);
             }
