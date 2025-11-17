@@ -15,7 +15,7 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration.Skills.TestAnimationSk
         {
             base.HandleSkillTriggered_ServerCalled(a_referencesHolderForSkills);
             Invoke(nameof(StopSkill_ForServer), m_animationDuration);
-            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.AddBlocker_ForServer(this);
+            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.Blackboard.AddBlocker_ForServer(this);
         }
 
         protected override void HandleSkillTriggered_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
@@ -27,7 +27,7 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration.Skills.TestAnimationSk
         protected override void HandleSkillStopped_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
         {
             base.HandleSkillStopped_ServerCalled(a_referencesHolderForSkills);
-            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.RemoveBlocker_ForServer(this);
+            (a_referencesHolderForSkills as IPlayerCharacterMovementControllerHolder).MovementController.Blackboard.RemoveBlocker_ForServer(this);
         }
 
         protected override void HandleSkillStopped_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)

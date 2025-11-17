@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Game.Gameplay.PlayerCharacter.Movement.Data
 {
     [CreateAssetMenu(fileName = "PlayerCharacterMovementData", menuName = "Game/Playground/PlayerCharacter/MovementData")]
-    public class MovementDataAsset : ScriptableObject
+    public class DefaultMovementDataAsset : ScriptableObject
     {
         [field: SerializeField]
         public float MaxMovementSpeed { get; private set; }
@@ -13,8 +13,6 @@ namespace Game.Gameplay.PlayerCharacter.Movement.Data
         public float Acceleration { get; private set; } = 8f;
         [field: SerializeField]
         public float Deceleration { get; private set; } = 15f;
-        [field: SerializeField]
-        public float GravityAcceleration { get; private set; } = 15f;
         [field: SerializeField]
         public float JumpVelocity { get; private set; } = 30f;
     }

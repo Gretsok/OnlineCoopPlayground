@@ -21,7 +21,8 @@ namespace Game.Gameplay.PlayerCharacter
         IPlayerCharacterAnimationControllerHolder,
         IIsGroundedControllerHolder,
         IHealthControllerHolder,
-        IInteractorHolder
+        IInteractorHolder,
+        IFallingSpeedControllerHolder
     {
         [field: Header("Core Character Controllers")]
         [field: SerializeField]
@@ -42,20 +43,23 @@ namespace Game.Gameplay.PlayerCharacter
         public HealthController HealthController { get; private set; }
         [field: SerializeField]
         public Interactor Interactor { get; private set; }
+        [field: SerializeField]
+        public FallingSpeedController FallingSpeedController { get; private set; }
 
         [field: Header("Gameplay Rules Handlers")]
         [field: SerializeField]
         public FallingDamageHandler FallingDamageHandler { get; private set; }
         
-        private void Start()
+        private void Awake()
         {
             // Initializing Controllers
-            MovementController.SetDependencies(Rigidbody, IsGroundedController);
             IsGroundedController.SetRelativeSource(Rigidbody.transform);
+            FallingSpeedController.SetDependencies(IsGroundedController, MovementController.Blackboard);
+            MovementController.SetDependencies(Rigidbody, FallingSpeedController, IsGroundedController);
             Interactor.SetSource(this);
             
             // Initializing Rules Handlers
-            FallingDamageHandler.SetDependencies(IsGroundedController, MovementController, HealthController);
+            FallingDamageHandler.SetDependencies(IsGroundedController, FallingSpeedController, HealthController);
         }
 
         protected override void OnNetworkPostSpawn()

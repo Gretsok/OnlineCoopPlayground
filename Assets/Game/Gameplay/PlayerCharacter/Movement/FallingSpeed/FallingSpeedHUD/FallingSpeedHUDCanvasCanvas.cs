@@ -24,7 +24,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement.FallingSpeedHUD
             if (!M_LocalCharacter)
                 return;
 
-            var verticalSpeed = M_LocalCharacter.MovementController.VerticalSpeed;
+            var verticalSpeed = M_LocalCharacter.FallingSpeedController.VerticalSpeed;
             if (M_LocalCharacter.IsGroundedController.IsGrounded || verticalSpeed > 0)
             {
                 m_container.SetActive(false);

@@ -14,8 +14,8 @@ namespace Game.Gameplay.PlayerCharacter.Movement.Editor
             
             GUILayout.Space(30);
             GUILayout.Label("----- DEBUG INFOS -----");
-            GUILayout.Label($"Current velocity: {castedTarget.CurrentPlanarVelocity}");
-            GUILayout.Label($"Direction input: {castedTarget.DirectionInput}");
+            GUILayout.Label($"Current velocity: {castedTarget.DefaultMovementBehaviour.CurrentPlanarVelocity}");
+            GUILayout.Label($"Direction input: {castedTarget.Blackboard.DirectionInput}");
         }
     }
 }

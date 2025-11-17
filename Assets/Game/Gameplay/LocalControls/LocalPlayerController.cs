@@ -82,11 +82,15 @@ namespace Game.Gameplay.Controls
             if (!AssignedCharacter)
                 return;
             
-            AssignedCharacter.MovementController?.Jump();
+            AssignedCharacter.MovementController?.Blackboard.StartJump();
         }
 
         private void HandleJumpInputCanceled(InputAction.CallbackContext a_obj)
         {
+            if (!AssignedCharacter)
+                return;
+            
+            AssignedCharacter.MovementController?.Blackboard.StopJump();
         }
 
         private void HandleCrouchInputStarted(InputAction.CallbackContext a_obj)
@@ -133,7 +137,7 @@ namespace Game.Gameplay.Controls
 
             var forward = m_cameraController.CameraAnchor.transform.forward.Flatten().normalized;
             var right = Vector3.Cross(Vector3.up, forward).normalized;
-            AssignedCharacter.MovementController.SetDirectionInput(moveInput.x * right + moveInput.y * forward);
+            AssignedCharacter.MovementController.Blackboard.SetDirectionInput(moveInput.x * right + moveInput.y * forward);
             
             m_cameraController.SetLookAroundInput(lookAroundInput);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Gameplay.GameplayInteractionsSystems.HealthHandling;
 using Game.Gameplay.PlayerCharacter.Movement;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace Game.Gameplay.PlayerCharacter.FallingDamage
@@ -10,7 +11,7 @@ namespace Game.Gameplay.PlayerCharacter.FallingDamage
     public class FallingDamageHandler : NetworkBehaviour
     {
         private IsGroundedController m_isGroundedController;
-        private PlayerCharacterMovementController m_movementController;
+        private FallingSpeedController m_fallingSpeedController;
         private HealthController m_healthController;
 
         [System.Serializable]
@@ -32,40 +33,33 @@ namespace Game.Gameplay.PlayerCharacter.FallingDamage
                 .Sort((a_info1, a_info2) => a_info1.MinimumFallingSpeed.CompareTo(a_info2.MinimumFallingSpeed));
         }
 
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            // It changes every we type a digit, very annoying... We should find another to ensure it remains in the right order.
-            // => We do it in the start!
-            /*
-            m_fallingDamageInfos
-                .Sort((a_info1, a_info2) => a_info1.MinimumFallingSpeed.CompareTo(a_info2.MinimumFallingSpeed));
-                */
-        }
-#endif
-
         public void SetDependencies(IsGroundedController a_isGroundedController, 
-            PlayerCharacterMovementController a_movementController,
+            FallingSpeedController a_fallingSpeedController,
             HealthController a_healthController)
         {
             m_isGroundedController = a_isGroundedController;
-            m_movementController = a_movementController;
+            m_fallingSpeedController = a_fallingSpeedController;
             m_healthController = a_healthController;
 
-            if (!IsServer)
-                return;
-            
-            m_isGroundedController.OnGrounded_ServerCalled += HandleGrounded_ServerCalled;
         }
 
-        public override void OnDestroy()
+        protected override void OnNetworkPostSpawn()
         {
-            base.OnDestroy();
+            base.OnNetworkPostSpawn();
             
-            if (!IsServer)
+            if (!IsOwner)
                 return;
             
-            m_isGroundedController.OnGrounded_ServerCalled -= HandleGrounded_ServerCalled;
+            m_isGroundedController.OnGrounded_OwnerCalled += HandleGrounded_OwnerCalled;
+        }
+
+        public override void OnNetworkPreDespawn()
+        {
+            base.OnNetworkPreDespawn();
+            if (!IsOwner)
+                return;
+            
+            m_isGroundedController.OnGrounded_OwnerCalled -= HandleGrounded_OwnerCalled;
         }
 
         /// <summary>
@@ -73,38 +67,48 @@ namespace Game.Gameplay.PlayerCharacter.FallingDamage
         /// </summary>
         private float m_damageHandlingCooldown = 1f;
         private float m_lastTimeDamageHandled = 0f;
-        private void HandleGrounded_ServerCalled(IsGroundedController a_obj)
+        private void HandleGrounded_OwnerCalled(IsGroundedController a_obj)
         {
             if (Time.time - m_lastTimeDamageHandled < m_damageHandlingCooldown)
                 return;
 
-            var fallingSpeed = -m_movementController.VerticalSpeed;
+            m_lastTimeDamageHandled = Time.time;
+            var fallingSpeed = -m_fallingSpeedController.VerticalSpeed;
+            HandleGrounded_ServerRpc(fallingSpeed);
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = true)]
+        private void HandleGrounded_ServerRpc(float a_fallingSpeed)
+        {
             for (int i = 0; i < m_fallingDamageInfos.Count; i++)
             {
                 var info = m_fallingDamageInfos[i];
 
                 if (i == m_fallingDamageInfos.Count - 1
-                    && info.MinimumFallingSpeed < fallingSpeed)
+                    && info.MinimumFallingSpeed < a_fallingSpeed)
                 {
-                    ApplyFallDamage(info, fallingSpeed);
+                    ApplyFallDamage(info, a_fallingSpeed);
+                    return;
                 }
                 
-                if (info.MinimumFallingSpeed > fallingSpeed)
+                if (info.MinimumFallingSpeed > a_fallingSpeed)
                 {
                     if (i == 0)
-                        break;
+                        return;
 
-                    ApplyFallDamage(m_fallingDamageInfos[i - 1], fallingSpeed);
-                    break;
+                    ApplyFallDamage(m_fallingDamageInfos[i - 1], a_fallingSpeed);
+                    return;
                 }
             }
+            
+            Debug.Log($"[SERVER] Not enough falling speed to receive damage : {a_fallingSpeed} m/s.");
         }
-
+        
         private void ApplyFallDamage(SFallingDamageInfo a_info, float a_fallingSpeed)
         {
             var damageToDeal = a_info.DamageToDeal;
             m_healthController.TakeDamage_ForServer(damageToDeal);
-            Debug.Log($"[SERVER] Fall damage of {a_info.DamageToDeal} applied to {m_movementController.OwnerClientId} for a falling speed of {a_fallingSpeed}");
+            Debug.Log($"[SERVER] Fall damage of {a_info.DamageToDeal} applied to {m_healthController.OwnerClientId} for a falling speed of {a_fallingSpeed} m/s.");
                     
             OnFallingDamageTaken_ServerCalled?.Invoke(this, damageToDeal);
         }
