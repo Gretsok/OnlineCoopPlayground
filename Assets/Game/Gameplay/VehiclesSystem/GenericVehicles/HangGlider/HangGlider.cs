@@ -17,8 +17,8 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
 
         private void Awake()
         {
-            m_seatsController.SetDependencies(m_vehicle);
-            m_movementController.SetDependencies(m_seatsController);
+            m_seatsController?.SetDependencies(m_vehicle);
+            m_movementController?.SetDependencies(m_seatsController);
         }
         
 #if UNITY_EDITOR

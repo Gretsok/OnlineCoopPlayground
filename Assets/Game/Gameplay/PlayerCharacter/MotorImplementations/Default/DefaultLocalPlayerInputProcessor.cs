@@ -42,11 +42,7 @@ namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
             if (!m_cameraController)
                 m_cameraController = CameraController.Instance;            
             
-            PlayersCharactersManager.Instance.RequestMotorFor_ForClients(NetworkManager.Singleton.LocalClientId, a_motor =>
-            {
-                if (a_motor is DefaultPlayerMotor defaultPlayerMotor)
-                    AssignCharacter(defaultPlayerMotor);
-            });
+            m_undergoingCharacterRequest = false;
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -107,11 +103,28 @@ namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
             AssignedMotor.SkillCaster.TryToTriggerSkill_ForOwner(AssignedMotor.SkillsInventory.GetSkillByIndex(2));
         }
 
+        private bool m_undergoingCharacterRequest = false;
         protected override void UpdateInput()
         {
             base.UpdateInput();
+            
+            // Character retrieving, we enter this input processor before the character is instantiated on the server.
             if (!AssignedMotor)
+            {
+                if (!m_undergoingCharacterRequest)
+                {
+                    m_undergoingCharacterRequest = true; // We set it before the actual because it remains synchron on the host.
+                    PlayersCharactersManager.Instance.RequestMotorFor_ForClients(NetworkManager.Singleton.LocalClientId, a_motor =>
+                    {
+                        if (a_motor is DefaultPlayerMotor defaultPlayerMotor)
+                            AssignCharacter(defaultPlayerMotor);
+                        
+                        m_undergoingCharacterRequest = false;
+                    });
+                }
+                
                 return;
+            }
 
             var moveInput = Actions.Movement.Move.ReadValue<Vector2>();
             var lookAroundInput = Actions.Camera.LookAround.ReadValue<Vector2>();

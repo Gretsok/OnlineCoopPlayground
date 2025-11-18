@@ -39,7 +39,7 @@ namespace Game.Networking
             
             LocalPlayerController.Instance.AssignClient(this);
             
-            PlayersCharactersManager.Instance.CreateMotorFor_ForOwner(this, HandlePlayerCharacterReceived, 
+            PlayersCharactersManager.Instance.CreateMotorForNewPlayer_ForOwner(this, HandlePlayerCharacterReceived, 
                 PlayersCharactersManager.EPlayerMotorType.Default);
         }
 

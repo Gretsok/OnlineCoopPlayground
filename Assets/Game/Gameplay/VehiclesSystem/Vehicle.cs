@@ -62,6 +62,16 @@ namespace Game.Gameplay.VehiclesSystem
             base.OnNetworkPreDespawn();
             RemoveCondition(IsMaxCharactersInVehicleNotReached);
             RemoveCondition(CharacterNotInThisVehicle);
+
+            if (IsServer)
+            {
+                for (var i = 0; i < m_charactersInVehicle.Count; i++)
+                {
+                    var vehiclePassengerControllerReference = m_charactersInVehicle[i];
+                    if (vehiclePassengerControllerReference.TryGet(out VehiclePassengerController vehiclePassengerController))
+                        KickCharacterFromVehicle_ForServer(vehiclePassengerController);
+                }
+            }
         }
 
         private bool IsMaxCharactersInVehicleNotReached(VehiclePassengerController a_passengerController)
@@ -80,6 +90,9 @@ namespace Game.Gameplay.VehiclesSystem
         /// <param name="a_vehiclePassengerController"></param>
         public bool RequestCharacterToJoin_ForServer(VehiclePassengerController a_vehiclePassengerController)
         {
+            if (!IsServer)
+                return false;
+            
             if (!CanHopIn_ForServer(a_vehiclePassengerController))
                 return false;
             
@@ -174,5 +187,6 @@ namespace Game.Gameplay.VehiclesSystem
         public event Action<VehiclePassengerController> OnCharacterLeft_ClientsCalled;
         protected virtual void HandleCharacterLeft_ClientsCalled(VehiclePassengerController a_vehiclePassengerController)
         { }
+        
     }
 }

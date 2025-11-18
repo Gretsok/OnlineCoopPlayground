@@ -44,6 +44,7 @@ namespace Game.Gameplay.PlayerCharacter
         }
 
         private bool m_hasBeenSetUp_ServerOnly = false;
+        public bool HasBeenSetUp_ServerOnly => m_hasBeenSetUp_ServerOnly;
         public void SetUpPawnInMotor_ForServer(PlayerCharacterPawn a_existingPawn = null)
         {
             if (!IsServer)
@@ -51,10 +52,7 @@ namespace Game.Gameplay.PlayerCharacter
             if (m_hasBeenSetUp_ServerOnly)
                 return;
 
-            if (a_existingPawn)
-            {
-                transform.position = a_existingPawn.transform.position;
-            }
+
             
             CharacterPawnAnchor = Instantiate(CharacterPawnAnchorPrefab);
             CharacterPawnAnchor.SpawnWithOwnership(OwnerClientId);
@@ -67,7 +65,7 @@ namespace Game.Gameplay.PlayerCharacter
             
             if (!PlayerCharacterPawn.IsSpawned)
                 PlayerCharacterPawn.NetworkObject.SpawnWithOwnership(OwnerClientId);
-            
+
             PlayerCharacterPawn.NetworkObject.TrySetParent(CharacterPawnAnchor);
 
             SetUpDependencies();

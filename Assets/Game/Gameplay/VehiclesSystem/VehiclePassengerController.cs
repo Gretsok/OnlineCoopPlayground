@@ -63,9 +63,18 @@ namespace Game.Gameplay.VehiclesSystem
                 m_currentVehicle.Value = a_vehicle;
                 a_vehicle.OnCharacterKicked_ServerCalled += HandleCharacterKicked_ServerCalled;
             }
+            else
+            {
+                Debug.Log($"[SERVER] {OwnerClientId} cannot join vehicle {a_vehicle.name}.");
+                return;
+            }
             
             PlayersCharactersManager.Instance.ChangeMotorTypeFor_ForServer(
-                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(), 
+                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(),
+                a_newMotor =>
+                {
+                    Debug.Log($"[SERVER] Player motor successfully changed for {OwnerClientId} when entering vehicle {a_vehicle.name}.", a_newMotor.gameObject);
+                },
                 PlayersCharactersManager.EPlayerMotorType.Vehicle);
             
             Debug.Log($"[SERVER] {OwnerClientId} has joined vehicle {m_currentVehicle.Value}.");
@@ -94,7 +103,11 @@ namespace Game.Gameplay.VehiclesSystem
             a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKicked_ServerCalled;
             
             PlayersCharactersManager.Instance.ChangeMotorTypeFor_ForServer(
-                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(), 
+                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(),
+                a_newMotor =>
+                {
+                    Debug.Log($"[SERVER] Player motor successfully changed for {OwnerClientId} when leaving vehicle {a_vehicle?.name}.", a_newMotor.gameObject);
+                }, 
                 PlayersCharactersManager.EPlayerMotorType.Default);
             
             Debug.Log($"[SERVER] {OwnerClientId} has left vehicle {m_currentVehicle.Value}.");

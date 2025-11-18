@@ -310,7 +310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 119318069}
   m_Layer: 0
-  m_Name: Blockout (2)
+  m_Name: Blockout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4009,7 +4009,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider.HangGlider
   m_vehicle: {fileID: 968886602}
   m_interactable: {fileID: 968886604}
-  m_seatsController: {fileID: 1702948592}
+  m_seatsController: {fileID: 0}
   m_movementController: {fileID: 394014881}
 --- !u!54 &968886607
 Rigidbody:
@@ -4177,6 +4177,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4874802182062810, guid: 5171d5eb12e0f184a8761aa4157f7d00, type: 3}
   m_PrefabInstance: {fileID: 1013110821}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1051378012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1051378013}
+  m_Layer: 0
+  m_Name: Positionner_2
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1051378013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051378012}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.8, z: -0.638}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1702948591}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1052513372
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4633,7 +4664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1366505812}
   m_Layer: 0
-  m_Name: Blockout (1)
+  m_Name: Blockout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4942,6 +4973,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 861636592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1492913601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1492913602}
+  m_Layer: 0
+  m_Name: Positionner_1
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1492913602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492913601}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.8, z: 0.472}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1702948591}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1503694037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5127,7 +5189,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1702948591}
-  - component: {fileID: 1702948593}
   - component: {fileID: 1702948592}
   m_Layer: 0
   m_Name: Seats Controller
@@ -5148,7 +5209,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1492913602}
+  - {fileID: 1051378013}
   m_Father: {fileID: 319471870}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1702948592
@@ -5160,36 +5223,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1702948590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af01766cc411b1b41af77c8e1be0f826, type: 3}
+  m_Script: {fileID: 11500000, guid: 1566ec77203733548ab087bb9caebb80, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider.HangGliderCharactersSeatsController
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.VehicleSeatsController
   ShowTopMostFoldoutHeaderGroup: 1
---- !u!114 &1702948593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1702948590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d7e9f807f03835459860c4e4a5fde49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.Vehicle
-  ShowTopMostFoldoutHeaderGroup: 1
-  m_maxCharactersInVehicle: 1
-  m_onCharacterJoined_ServerCalled:
-    m_PersistentCalls:
-      m_Calls: []
-  m_onCharacterJoined_ClientsCalled:
-    m_PersistentCalls:
-      m_Calls: []
-  m_onCharacterLeft_ServerCalled:
-    m_PersistentCalls:
-      m_Calls: []
-  m_onCharacterLeft_ClientsCalled:
-    m_PersistentCalls:
-      m_Calls: []
+  m_vehicle: {fileID: 968886602}
+  m_vehicleSeatsAnchorsPositionners:
+  - {fileID: 1492913602}
+  - {fileID: 1051378013}
+  m_vehicleSeatsNetworkedAnchorPrefab: {fileID: 1853356035535932858, guid: ce9eb43a8da82834c887946093fdbfb4, type: 3}
 --- !u!1001 &1742700599
 PrefabInstance:
   m_ObjectHideFlags: 0

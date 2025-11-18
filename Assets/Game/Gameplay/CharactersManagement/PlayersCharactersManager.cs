@@ -4,6 +4,7 @@ using Game.Gameplay.PlayerCharacter;
 using Game.Gameplay.PlayerCharacter.CharacterImplementations;
 using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
 using Game.Gameplay.VehiclesSystem;
+using Game.Gameplay.VehiclesSystem.PlayerMotor;
 using Game.Networking;
 using Unity.Netcode;
 using UnityEngine;
@@ -45,10 +46,16 @@ namespace Game.Gameplay.CharactersManagement
         
 
         private event Action<APlayerMotor> m_tempResultAfterGetRequestCallback;
+        
+        /// <summary>
+        /// We assume the client is asking for its own motor.
+        /// </summary>
+        /// <param name="a_clientID"></param>
+        /// <param name="a_resultCallback"></param>
         public void RequestMotorFor_ForClients(ulong a_clientID,
             Action<APlayerMotor> a_resultCallback)
         {
-            m_tempResultCallback = a_resultCallback;
+            m_tempResultAfterGetRequestCallback = a_resultCallback;
             RequestMotorFor_ServerRpc(a_clientID);
         }
 
@@ -65,7 +72,6 @@ namespace Game.Gameplay.CharactersManagement
             if (!a_motorReference.TryGet(out APlayerMotor motor))
             {
                 Debug.LogError($"[OWNER] Cannot retrieve motor from motor reference {a_motorReference}");
-                return;
             }
             
             m_tempResultAfterGetRequestCallback?.Invoke(motor);
@@ -85,12 +91,14 @@ namespace Game.Gameplay.CharactersManagement
             ChangeMotorTypeFor_ServerRpc(a_client, a_playerMotorType);
         }
         
-        public void ChangeMotorTypeFor_ForServer(AbstractConnectedClientObject a_client, EPlayerMotorType a_playerMotorType)
+        public void ChangeMotorTypeFor_ForServer(AbstractConnectedClientObject a_client, Action<APlayerMotor> a_resultCallback, EPlayerMotorType a_playerMotorType)
         {
-            if (!a_client.IsOwner)
+            if (!IsServer)
                 return;
             
-            ChangeMotorTypeFor_ServerRpc(a_client, a_playerMotorType);
+            m_tempResultCallback = a_resultCallback;
+            var newMotor = ChangeMotorTypeForExistingPlayer_ServerOnly(a_playerMotorType, a_client);
+            a_resultCallback?.Invoke(newMotor);
         }
 
         [Rpc(SendTo.Server)]
@@ -105,51 +113,68 @@ namespace Game.Gameplay.CharactersManagement
                 Debug.LogError($"[SERVER] Cannot retrieve client from client reference {a_clientReference}");
                 return;
             }
-            
-            if (!m_motors.ContainsKey(client.OwnerClientId))
+
+            var newMotor = ChangeMotorTypeForExistingPlayer_ServerOnly(a_playerMotorType, client);
+            SendBackMotorAfterCreation_OwnerRpc(newMotor, RpcTarget.Single(client.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        private APlayerMotor ChangeMotorTypeForExistingPlayer_ServerOnly(EPlayerMotorType a_playerMotorType,
+            AbstractConnectedClientObject a_client)
+        {
+            APlayerMotor newMotor = null;
+
+            if (!m_motors.ContainsKey(a_client.OwnerClientId))
             {
-                CreateMotorFor_ServerRpc(client,  a_playerMotorType);
+                newMotor = CreateMotorForNewPlayer_ServerOnly(a_playerMotorType, a_client);
             }
             else
             {
-                var previousMotor = m_motors[client.OwnerClientId];
+                var previousMotor = m_motors[a_client.OwnerClientId];
                 
-                var newMotor = InstantiateAndSpawnMotorFor(client.OwnerClientId, a_playerMotorType);
+                newMotor = InstantiateAndSpawnMotorFor(a_client.OwnerClientId, a_playerMotorType, previousMotor.PlayerCharacterPawn);
                 newMotor.SetUpPawnInMotor_ForServer(previousMotor.PlayerCharacterPawn);
-                m_motors[client.OwnerClientId] = newMotor;
-                SendBackMotorAfterCreation_OwnerRpc(newMotor, RpcTarget.Single(client.OwnerClientId, RpcTargetUse.Temp));
+                m_motors[a_client.OwnerClientId] = newMotor;
                 Destroy(previousMotor.gameObject);
             }
+
+            return newMotor;
         }
-        
-        public void CreateMotorFor_ForOwner(AbstractConnectedClientObject a_client, Action<APlayerMotor> a_resultCallback, EPlayerMotorType a_playerMotorType)
+
+        public void CreateMotorForNewPlayer_ForOwner(AbstractConnectedClientObject a_client, Action<APlayerMotor> a_resultCallback, EPlayerMotorType a_playerMotorType)
         {
             if (!a_client.IsOwner)
                 return;
             
             m_tempResultCallback += a_resultCallback;
-            CreateMotorFor_ServerRpc(a_client, a_playerMotorType);
+            CreateMotorForNewPlayer_ServerRpc(a_client, a_playerMotorType);
         }
 
         [Rpc(SendTo.Server)]
-        private void CreateMotorFor_ServerRpc(NetworkBehaviourReference a_clientReference, EPlayerMotorType a_playerMotorType)
+        private void CreateMotorForNewPlayer_ServerRpc(NetworkBehaviourReference a_clientReference, EPlayerMotorType a_playerMotorType)
         {
             if (!a_clientReference.TryGet(out AbstractConnectedClientObject client))
             {
                 Debug.LogError($"[SERVER] Cannot retrieve client from client reference {a_clientReference}");
                 return;
             }
-            var motor = InstantiateAndSpawnMotorFor(client.OwnerClientId, a_playerMotorType);
+            
+            var motor = CreateMotorForNewPlayer_ServerOnly(a_playerMotorType, client);
+
+            SendBackMotorAfterCreation_OwnerRpc(motor, RpcTarget.Single(client.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        private APlayerMotor CreateMotorForNewPlayer_ServerOnly(EPlayerMotorType a_playerMotorType, AbstractConnectedClientObject a_client)
+        {
+            var motor = InstantiateAndSpawnMotorFor(a_client.OwnerClientId, a_playerMotorType);
             motor.SetUpPawnInMotor_ForServer();
 
-            if (m_motors.ContainsKey(client.OwnerClientId))
+            if (m_motors.ContainsKey(a_client.OwnerClientId))
             {
-                DeleteMotorFor_ServerRpc(client.OwnerClientId);
+                DeleteMotorFor_ServerRpc(a_client.OwnerClientId);
             }
             
-            m_motors.Add(client.OwnerClientId, motor);
-            
-            SendBackMotorAfterCreation_OwnerRpc(motor, RpcTarget.Single(client.OwnerClientId, RpcTargetUse.Temp));
+            m_motors.Add(a_client.OwnerClientId, motor);
+            return motor;
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -165,18 +190,25 @@ namespace Game.Gameplay.CharactersManagement
             m_tempResultCallback = null;
         }
         
-        private APlayerMotor InstantiateAndSpawnMotorFor(ulong a_clientID, EPlayerMotorType a_playerMotorType)
+        private APlayerMotor InstantiateAndSpawnMotorFor(ulong a_clientID, EPlayerMotorType a_playerMotorType, PlayerCharacterPawn a_existingPawn = null)
         {
                 
             Debug.Log($"[PlayersCharactersManager] Adding motor with Client ID {a_clientID}");
             APlayerMotor motor = null;
+            
+            var positionToSpawn = a_existingPawn ? a_existingPawn.transform.position : transform.position;
+            var rotationToSpawn = a_existingPawn ? a_existingPawn.transform.rotation : Quaternion.identity;
             if (a_playerMotorType == EPlayerMotorType.Vehicle)
             {
-                motor = Instantiate(m_vehicleMotorPrefab, transform.position, Quaternion.identity);
+                motor = Instantiate(m_vehicleMotorPrefab,
+                    positionToSpawn,
+                    rotationToSpawn);
             }
             else
             {
-                motor = Instantiate(m_defaultMotorPrefab, transform.position, Quaternion.identity);
+                motor = Instantiate(m_defaultMotorPrefab,
+                    positionToSpawn,
+                    rotationToSpawn);
             }
             motor.NetworkObject.SpawnWithOwnership(a_clientID);
 
