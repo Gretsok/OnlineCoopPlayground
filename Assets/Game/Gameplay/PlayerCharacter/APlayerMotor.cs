@@ -27,27 +27,51 @@ namespace Game.Gameplay.PlayerCharacter
         public PlayerCharacterAnimationController PlayerCharacterAnimationController => PlayerCharacterPawn?.PlayerCharacterAnimationController;
         public PlayerCharacterGameDataRetrieverAndInjector PlayerCharacterGameDataRetrieverAndInjector => PlayerCharacterPawn?.PlayerCharacterGameDataRetrieverAndInjector;
         public VehiclePassengerController VehiclePassengerController => PlayerCharacterPawn?.VehiclePassengerController;
+
+        public void SetPlayerCharacterPawn(PlayerCharacterPawn a_playerPawn)
+        {
+            PlayerCharacterPawn = a_playerPawn;
+        }
         
         protected override void OnNetworkPostSpawn()
         {
             base.OnNetworkPostSpawn();
-            
-            if (IsServer)
-            {
-                CharacterPawnAnchor = Instantiate(CharacterPawnAnchorPrefab);
-                CharacterPawnAnchor.SpawnWithOwnership(OwnerClientId);
-                CharacterPawnAnchor.TrySetParent(NetworkObject);
-            
-                PlayerCharacterPawn = Instantiate(PlayerCharacterPawnPrefab);
-                PlayerCharacterPawn.NetworkObject.SpawnWithOwnership(OwnerClientId);
-                PlayerCharacterPawn.NetworkObject.TrySetParent(CharacterPawnAnchor);
-            
-                SetUpDependencies();
-            }
-            else
+
+            if (!IsServer)
             {
                 RequestReferences_ServerRpc(NetworkManager.LocalClientId);
             }
+        }
+
+        private bool m_hasBeenSetUp_ServerOnly = false;
+        public void SetUpPawnInMotor_ForServer(PlayerCharacterPawn a_existingPawn = null)
+        {
+            if (!IsServer)
+                return;
+            if (m_hasBeenSetUp_ServerOnly)
+                return;
+
+            if (a_existingPawn)
+            {
+                transform.position = a_existingPawn.transform.position;
+            }
+            
+            CharacterPawnAnchor = Instantiate(CharacterPawnAnchorPrefab);
+            CharacterPawnAnchor.SpawnWithOwnership(OwnerClientId);
+            CharacterPawnAnchor.TrySetParent(NetworkObject);
+
+            if (!a_existingPawn)
+                PlayerCharacterPawn = Instantiate(PlayerCharacterPawnPrefab);
+            else
+                PlayerCharacterPawn = a_existingPawn;
+            
+            if (!PlayerCharacterPawn.IsSpawned)
+                PlayerCharacterPawn.NetworkObject.SpawnWithOwnership(OwnerClientId);
+            
+            PlayerCharacterPawn.NetworkObject.TrySetParent(CharacterPawnAnchor);
+
+            SetUpDependencies();
+            m_hasBeenSetUp_ServerOnly = true;
         }
 
         [Rpc(SendTo.Server)]
@@ -85,6 +109,15 @@ namespace Game.Gameplay.PlayerCharacter
         {
             PlayerCharacterGameDataRetrieverAndInjector.SetDependencies(this);
             VehiclePassengerController.SetDependencies(this);
+        }
+
+        public override void OnNetworkPreDespawn()
+        {
+            base.OnNetworkPreDespawn();
+            if (!IsServer)
+                return;
+            
+            Destroy(CharacterPawnAnchor.gameObject);
         }
     }
 }

@@ -39,7 +39,8 @@ namespace Game.Networking
             
             LocalPlayerController.Instance.AssignClient(this);
             
-            PlayersCharactersManager.Instance.RetrieveCharacterFor_ForOwner(this, HandlePlayerCharacterReceived);
+            PlayersCharactersManager.Instance.CreateMotorFor_ForOwner(this, HandlePlayerCharacterReceived, 
+                PlayersCharactersManager.EPlayerMotorType.Default);
         }
 
         private void HandlePlayerCharacterReceived(APlayerMotor a_obj)
@@ -50,7 +51,7 @@ namespace Game.Networking
         public override void OnNetworkPreDespawn()
         {
             base.OnNetworkPreDespawn();
-            PlayersCharactersManager.Instance.DeleteCharacterFor_ForOwner(this);
+            PlayersCharactersManager.Instance.DeleteMotorFor_ForOwner(this);
         }
     }
 }

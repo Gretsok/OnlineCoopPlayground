@@ -4270,6 +4270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayersCharactersManager
   ShowTopMostFoldoutHeaderGroup: 1
+  m_playerCharacterPawnPrefab: {fileID: 0}
   m_defaultMotorPrefab: {fileID: 3440679924463110233, guid: 7672695045d889f4092315529333e565, type: 3}
   m_vehicleMotorPrefab: {fileID: 3158460062421670020, guid: d519c18031e1bec4481f5c528363ed7c, type: 3}
 --- !u!114 &1185475287
@@ -5163,7 +5164,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider.HangGliderCharactersSeatsController
   ShowTopMostFoldoutHeaderGroup: 1
-  m_movementBehaviourPrefab: {fileID: 576539887904934889, guid: 60ff1d16e8130db438a75fb164e439af, type: 3}
 --- !u!114 &1702948593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5607,6 +5607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerController
   <DefaultLocalPlayerInputProcessor>k__BackingField: {fileID: 62923218}
+  <VehicleLocalPlayerInputProcessor>k__BackingField: {fileID: 2062293551}
 --- !u!4 &2025015508
 Transform:
   m_ObjectHideFlags: 0
@@ -5695,6 +5696,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2062293550}
+  - component: {fileID: 2062293551}
   m_Layer: 0
   m_Name: VehicleLocalPlayerInputProcessor
   m_TagString: Untagged
@@ -5717,6 +5719,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2025015508}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2062293551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062293549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe3e989d490c1f44ab3250cc40ca031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Gameplay.VehiclesSystem.VehicleLocalPlayerInputProcessor
 --- !u!1001 &2106067350
 PrefabInstance:
   m_ObjectHideFlags: 0

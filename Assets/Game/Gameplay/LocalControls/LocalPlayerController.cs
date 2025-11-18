@@ -1,5 +1,5 @@
-using System;
 using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
+using Game.Gameplay.VehiclesSystem;
 using Game.Networking;
 using UnityEngine;
 
@@ -9,7 +9,8 @@ namespace Game.Gameplay.LocalControls
     {
         [field: SerializeField]
         public DefaultLocalPlayerInputProcessor DefaultLocalPlayerInputProcessor { get; private set; }
-        
+        [field: SerializeField]
+        public VehicleLocalPlayerInputProcessor VehicleLocalPlayerInputProcessor { get; private set; }
         public ALocalPlayerInputProcessor CurrentLocalPlayerInputProcessor { get; private set; }
         
         public static LocalPlayerController Instance { get; private set; }

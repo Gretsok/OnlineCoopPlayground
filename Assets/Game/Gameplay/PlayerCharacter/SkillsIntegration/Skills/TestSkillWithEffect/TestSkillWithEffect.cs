@@ -9,7 +9,7 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration.Skills.TestSkillWithEf
         [SerializeField]
         private EffectOfTestSkillWithEffect m_effectPrefab;
 
-        protected override void HandleSkillTriggered_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected override void HandleSkillTriggered_ServerCalled(MonoBehaviour a_referencesHolderForSkills)
         {
             base.HandleSkillTriggered_ServerCalled(a_referencesHolderForSkills);
             var effect = (a_referencesHolderForSkills as IEffectsControllerHolder).EffectsController.AddTimedEffect_ForServer(m_effectPrefab);

@@ -1,7 +1,9 @@
 ﻿using System;
 using Game.Gameplay.CameraSystem;
+using Game.Gameplay.CharactersManagement;
 using Game.Gameplay.LocalControls;
 using Tools.Utils;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -39,6 +41,12 @@ namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
             base.HandleActivation();
             if (!m_cameraController)
                 m_cameraController = CameraController.Instance;            
+            
+            PlayersCharactersManager.Instance.RequestMotorFor_ForClients(NetworkManager.Singleton.LocalClientId, a_motor =>
+            {
+                if (a_motor is DefaultPlayerMotor defaultPlayerMotor)
+                    AssignCharacter(defaultPlayerMotor);
+            });
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

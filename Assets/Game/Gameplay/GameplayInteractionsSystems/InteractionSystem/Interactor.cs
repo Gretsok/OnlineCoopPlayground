@@ -1,3 +1,4 @@
+using Game.Gameplay.GameplayInteractionsSystems.InteractionSystem.HUD;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem
         private void FixedUpdate()
         {
             if (!IsOwner) 
+                return;
+            if (!IsSpawned)
                 return;
             
             var interactableToInteractWith = m_interactablesDetector.GetInteractableToInteractWith();
@@ -73,6 +76,12 @@ namespace Game.Gameplay.GameplayInteractionsSystems.InteractionSystem
             InteractableToInteractWith.RequestInteraction_ForServer(this);
             
             InteractableToInteractWith = null;
+        }
+
+        public override void OnNetworkPreDespawn()
+        {
+            base.OnNetworkPreDespawn();
+            InteractionIndicationsHUDCanvas.Instance.Hide();
         }
     }
 }

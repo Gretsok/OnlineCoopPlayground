@@ -1,3 +1,7 @@
+using System;
+using Game.Gameplay.CharactersManagement;
+using Game.Gameplay.LocalControls;
+using Game.Networking;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -17,7 +21,30 @@ namespace Game.Gameplay.VehiclesSystem
         {
             Parent = a_parent;
         }
-        
+
+        private void Start()
+        {
+            m_currentVehicle.OnValueChanged += HandleVehicleChanged;
+        }
+
+        private void HandleVehicleChanged(NetworkBehaviourReference a_previousVValue, NetworkBehaviourReference a_newValue)
+        {
+            if (!IsOwner)
+                return;
+            var localPlayerController = LocalPlayerController.Instance;
+            
+            if (a_newValue.TryGet(out Vehicle currentVehicle))
+            {
+                localPlayerController.VehicleLocalPlayerInputProcessor.SetVehicle(currentVehicle, this);
+                localPlayerController.SwitchToProcessor(localPlayerController.VehicleLocalPlayerInputProcessor);
+            }
+            else
+            {
+                localPlayerController.SwitchToProcessor(localPlayerController.DefaultLocalPlayerInputProcessor);
+                localPlayerController.VehicleLocalPlayerInputProcessor.SetVehicle(null, this);
+            }
+        }
+
         public void JoinVehicle_ForServer(Vehicle a_vehicle)
         {
             if (!IsServer)
@@ -34,11 +61,17 @@ namespace Game.Gameplay.VehiclesSystem
             if (a_vehicle.RequestCharacterToJoin_ForServer(this))
             {
                 m_currentVehicle.Value = a_vehicle;
-                a_vehicle.OnCharacterKicked_ServerCalled += HandleCharacterKickedServerCalled;
+                a_vehicle.OnCharacterKicked_ServerCalled += HandleCharacterKicked_ServerCalled;
             }
+            
+            PlayersCharactersManager.Instance.ChangeMotorTypeFor_ForServer(
+                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(), 
+                PlayersCharactersManager.EPlayerMotorType.Vehicle);
+            
+            Debug.Log($"[SERVER] {OwnerClientId} has joined vehicle {m_currentVehicle.Value}.");
         }
-
-        private void HandleCharacterKickedServerCalled(Vehicle a_vehicle, VehiclePassengerController a_vehiclePassengerController)
+        
+        private void HandleCharacterKicked_ServerCalled(Vehicle a_vehicle, VehiclePassengerController a_vehiclePassengerController)
         {
             if (!IsServer)
             {
@@ -50,7 +83,7 @@ namespace Game.Gameplay.VehiclesSystem
 
             if (a_vehicle != currentVehicle)
             {
-                a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKickedServerCalled;
+                a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKicked_ServerCalled;
                 return;
             }
 
@@ -58,9 +91,29 @@ namespace Game.Gameplay.VehiclesSystem
                 return;
             
             m_currentVehicle.Value = null;
-            a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKickedServerCalled;
+            a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKicked_ServerCalled;
+            
+            PlayersCharactersManager.Instance.ChangeMotorTypeFor_ForServer(
+                NetworkManager.ConnectedClients[OwnerClientId].PlayerObject.GetComponent<AbstractConnectedClientObject>(), 
+                PlayersCharactersManager.EPlayerMotorType.Default);
+            
+            Debug.Log($"[SERVER] {OwnerClientId} has left vehicle {m_currentVehicle.Value}.");
         }
 
+        public void LeaveVehicle_ForOwner()
+        {
+            if (!IsOwner)
+                return;
+            
+            LeaveVehicle_ServerRpc();
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = true)]
+        private void LeaveVehicle_ServerRpc()
+        {
+            LeaveVehicle_ForServer();
+        }
+        
         public void LeaveVehicle_ForServer()
         {
             if (!IsServer)

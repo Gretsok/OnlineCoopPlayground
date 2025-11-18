@@ -6,7 +6,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
     public class SkillCaster : NetworkBehaviour
     {
         [SerializeField]
-        private AReferencesHolderForSkills m_referencesHolderForSkills;
+        private MonoBehaviour m_referencesHolderForSkills;
         
         private readonly NetworkVariable<bool> m_isPerformingASkill = new NetworkVariable<bool>();
         public bool IsPerformingASkill => m_isPerformingASkill?.Value ?? false;
@@ -61,7 +61,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             }
         }
 
-        private void HandleSkillStopped_ServerCalled(ASkill a_skill, AReferencesHolderForSkills a_referencesHolderForSkills)
+        private void HandleSkillStopped_ServerCalled(ASkill a_skill, MonoBehaviour a_referencesHolderForSkills)
         {
             a_skill.OnSkillStopped_ServerCalled -= HandleSkillStopped_ServerCalled;
             

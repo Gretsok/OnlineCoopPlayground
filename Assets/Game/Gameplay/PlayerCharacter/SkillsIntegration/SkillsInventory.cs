@@ -72,5 +72,22 @@ namespace Game.Gameplay.PlayerCharacter.SkillsIntegration
                 return null;
             }
         }
+
+        public override void OnNetworkPreDespawn()
+        {
+            base.OnNetworkPreDespawn();
+            if (!IsServer)
+                return;
+
+            for (int i = m_instantiatedSkills.Count - 1; i >= 0; i--)
+            {
+                var skillReference = m_instantiatedSkills[i];
+
+                if (skillReference.TryGet(out NetworkObject networkObject))
+                {
+                    Destroy(networkObject.gameObject);
+                }
+            }
+        }
     }
 }

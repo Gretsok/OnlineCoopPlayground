@@ -11,6 +11,7 @@ namespace Game.Gameplay.PlayerCharacter.Animation
 
         [SerializeField]
         private PlayerCharacterAnimationController m_animationController;
+        public PlayerCharacterAnimationController AnimationController => m_animationController;
 
         public void SetDependencies(MonoBehaviour a_parent)
         {

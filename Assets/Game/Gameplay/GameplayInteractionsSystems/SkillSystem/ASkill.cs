@@ -10,16 +10,16 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
         private readonly NetworkVariable<bool> m_isPerforming = new NetworkVariable<bool>();
         public bool IsPerforming => m_isPerforming?.Value ?? false;
 
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillTriggered_ServerCalled;
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillTriggered_ClientsCalled;
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillCancelled_ServerCalled;
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillCancelled_ClientsCalled;
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillStopped_ServerCalled;
-        public event Action<ASkill, AReferencesHolderForSkills> OnSkillStopped_ClientsCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillTriggered_ServerCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillTriggered_ClientsCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillCancelled_ServerCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillCancelled_ClientsCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillStopped_ServerCalled;
+        public event Action<ASkill, MonoBehaviour> OnSkillStopped_ClientsCalled;
 
-        private AReferencesHolderForSkills m_referencesHolderForSkills;
+        private MonoBehaviour m_referencesHolderForSkills;
         
-        public void InjectReferencesHolder_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        public void InjectReferencesHolder_ClientsCalled(MonoBehaviour a_referencesHolderForSkills)
         {
             m_referencesHolderForSkills = a_referencesHolderForSkills;
         }
@@ -34,7 +34,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             return CanBeTriggered_ForServer();
         }
         
-        public bool TriggerSkill_ForServer(AReferencesHolderForSkills a_referencesHolderForSkills)
+        public bool TriggerSkill_ForServer(MonoBehaviour a_referencesHolderForSkills)
         {
             if (!IsServer)
             {
@@ -57,7 +57,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             return true;
         }
         
-        protected virtual void HandleSkillTriggered_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillTriggered_ServerCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -67,21 +67,21 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             OnSkillTriggered_ClientsCalled?.Invoke(this, m_referencesHolderForSkills);
         }
         
-        protected virtual void HandleSkillTriggered_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillTriggered_ClientsCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
         
         
-        public bool CanBeCancelled_ForServer(AReferencesHolderForSkills a_referencesHolderForSkills)
+        public bool CanBeCancelled_ForServer(MonoBehaviour a_referencesHolderForSkills)
         {
             return IsPerforming;
         }
         
-        public bool CanBeCancelled_ForClients(AReferencesHolderForSkills a_referencesHolderForSkills)
+        public bool CanBeCancelled_ForClients(MonoBehaviour a_referencesHolderForSkills)
         {
             return CanBeCancelled_ForServer(a_referencesHolderForSkills);
         }
         
-        public void CancelTriggerSkill_ForServer(AReferencesHolderForSkills a_referencesHolderForSkills)
+        public void CancelTriggerSkill_ForServer(MonoBehaviour a_referencesHolderForSkills)
         {
             if (!IsServer)
             {
@@ -106,10 +106,10 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             OnSkillCancelled_ServerCalled?.Invoke(this, a_referencesHolderForSkills);
         }
         
-        protected virtual void HandleSkillPreCanceled_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillPreCanceled_ServerCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
         
-        protected virtual void HandleSkillPostCanceled_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillPostCanceled_ServerCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -119,7 +119,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             OnSkillCancelled_ClientsCalled?.Invoke(this, m_referencesHolderForSkills);
         }
         
-        protected virtual void HandleSkillPostCanceled_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillPostCanceled_ClientsCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
         
         protected void StopSkill_ForServer()
@@ -136,7 +136,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             HandleSkillStopped_ClientsRpc();
         }
 
-        protected virtual void HandleSkillStopped_ServerCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillStopped_ServerCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
 
         [Rpc(SendTo.ClientsAndHost)]
@@ -146,7 +146,7 @@ namespace Game.Gameplay.GameplayInteractionsSystems.SkillSystem
             OnSkillStopped_ClientsCalled?.Invoke(this, m_referencesHolderForSkills);
         }
         
-        protected virtual void HandleSkillStopped_ClientsCalled(AReferencesHolderForSkills a_referencesHolderForSkills)
+        protected virtual void HandleSkillStopped_ClientsCalled(MonoBehaviour a_referencesHolderForSkills)
         { }
     }
 }
