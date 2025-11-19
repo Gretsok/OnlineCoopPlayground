@@ -2,14 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DG.Tweening;
-using Game.Gameplay.CharactersManagement;
 using Game.Gameplay.VehiclesSystem.PlayerMotor;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Gameplay.VehiclesSystem
 {
@@ -30,11 +26,19 @@ namespace Game.Gameplay.VehiclesSystem
         
         [SerializeField]
         private List<Transform> m_vehicleSeatsAnchorsPositionners = new();
-
+        public NetworkObject SeatsAnchorsContainer { get; private set; } 
         [SerializeField]
         private NetworkObject m_vehicleSeatsNetworkedAnchorPrefab;
 
         private readonly List<SeatInfo> m_seatInfos_ServerOnly = new();
+        public IReadOnlyList<SeatInfo> SeatInfos_ServerOnly => m_seatInfos_ServerOnly;
+        
+        public float MaximumSeats => m_seatInfos_ServerOnly.Count;
+
+        public void SetDependencies(NetworkObject a_seatsAnchorsContainer)
+        {
+            SeatsAnchorsContainer = a_seatsAnchorsContainer;
+        }
         
         public override void OnNetworkSpawn()
         {
@@ -50,7 +54,7 @@ namespace Game.Gameplay.VehiclesSystem
                     .InstantiateAndSpawn(m_vehicleSeatsNetworkedAnchorPrefab, 
                         position: anchorPositionner.position, 
                         rotation: anchorPositionner.rotation);
-                anchor.TrySetParent(NetworkObject);
+                anchor.TrySetParent(SeatsAnchorsContainer ? SeatsAnchorsContainer : NetworkObject);
                 m_seatInfos_ServerOnly.Add(new SeatInfo()
                 {
                     NetworkObjectAnchor = anchor,

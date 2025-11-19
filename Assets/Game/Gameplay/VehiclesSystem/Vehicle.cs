@@ -11,6 +11,13 @@ namespace Game.Gameplay.VehiclesSystem
     /// </summary>
     public class Vehicle : NetworkBehaviour
     {
+        [field: SerializeField]
+        public VehicleSeatsController VehicleSeatsController { get; private set; }
+        [field: SerializeField]
+        public Rigidbody Rigidbody { get; private set; }
+        [field: SerializeField]
+        public VehicleLocalCameraController LocalCameraController { get; private set; }
+        
         public delegate bool DCondition(VehiclePassengerController a_passengerController);
 
         private readonly List<DCondition> m_conditions = new List<DCondition>();
@@ -46,8 +53,6 @@ namespace Game.Gameplay.VehiclesSystem
             return true;
         }
         
-        [SerializeField]
-        private int m_maxCharactersInVehicle = 1;
         private readonly NetworkList<NetworkBehaviourReference> m_charactersInVehicle = new NetworkList<NetworkBehaviourReference>();
 
         protected override void OnNetworkPostSpawn()
@@ -76,7 +81,7 @@ namespace Game.Gameplay.VehiclesSystem
 
         private bool IsMaxCharactersInVehicleNotReached(VehiclePassengerController a_passengerController)
         {
-            return m_charactersInVehicle.Count < m_maxCharactersInVehicle;
+            return m_charactersInVehicle.Count < VehicleSeatsController.MaximumSeats;
         }
 
         private bool CharacterNotInThisVehicle(VehiclePassengerController a_passengerController)

@@ -1,34 +1,29 @@
-using Game.Gameplay.GameplayInteractionsSystems.InteractionSystem;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
 {
-    public class HangGlider : MonoBehaviour
+    public class HangGlider : Vehicle
     {
-        [SerializeField]
-        private Vehicle m_vehicle;
-        [SerializeField]
-        private Interactable m_interactable;
-
-        [SerializeField]
-        private HangGliderCharactersSeatsController m_seatsController;
-        [SerializeField]
-        private HangGliderVehicleMovementController m_movementController;
-
+        [field: SerializeField]
+        //public FullPhysicsTest1_HangGliderVehicleMovementController MovementController { get; private set; }
+        public HangGliderVehicleMovementController MovementController { get; private set; }
+        [field: SerializeField]
+        public NetworkObject Model { get; private set; }
         private void Awake()
         {
-            m_seatsController?.SetDependencies(m_vehicle);
-            m_movementController?.SetDependencies(m_seatsController);
+            VehicleSeatsController.SetDependencies(Model);
+            MovementController.SetDependencies(VehicleSeatsController, Rigidbody, Model);
         }
-        
-#if UNITY_EDITOR
-        private void OnValidate()
+
+        public override void OnNetworkSpawn()
         {
-            if (!m_vehicle)
-                m_vehicle = GetComponent<Vehicle>();
-            if (!m_interactable)
-                m_interactable = GetComponent<Interactable>();
+            base.OnNetworkSpawn();
+            if (!Model.IsSpawned)
+                Model.SpawnWithOwnership(OwnerClientId);
+            
+            VehicleSeatsController.SetDependencies(Model);
+            MovementController.SetDependencies(VehicleSeatsController, Rigidbody, Model);
         }
-#endif
     }
 }

@@ -39,5 +39,4 @@ MonoBehaviour:
     m_RotationOrder: 4
   <Acceleration>k__BackingField: 8
   <Deceleration>k__BackingField: 10
-  <GravityAcceleration>k__BackingField: 12
   <JumpVelocity>k__BackingField: 5

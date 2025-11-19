@@ -111,6 +111,14 @@ namespace Game.Gameplay.VehiclesSystem
                 PlayersCharactersManager.EPlayerMotorType.Default);
             
             Debug.Log($"[SERVER] {OwnerClientId} has left vehicle {m_currentVehicle.Value}.");
+            
+            HandleCharacterKicked_OwnerRpc(RpcTarget.Single(OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void HandleCharacterKicked_OwnerRpc(RpcParams a_rpcParams)
+        {
+            m_directionInput.Value = default;
         }
 
         public void LeaveVehicle_ForOwner()
@@ -139,5 +147,20 @@ namespace Game.Gameplay.VehiclesSystem
                 vehicle.KickCharacterFromVehicle_ForServer(this);
             }
         }
+        
+        
+        #region Input Handling
+
+        private readonly NetworkVariable<Vector2> m_directionInput = new(writePerm: NetworkVariableWritePermission.Owner);
+        public Vector2 DirectionInput => m_directionInput.Value;
+
+        public void SetDirection_ForOwner(Vector2 a_directionInput)
+        {
+            if (!IsOwner)
+                return;
+            
+            m_directionInput.Value = a_directionInput;
+        }
+        #endregion
     }
 }

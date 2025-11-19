@@ -1,4 +1,6 @@
 ﻿
+using Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl;
+
 namespace Game.Gameplay.PlayerCharacter.Movement
 {
     public interface IIsGroundedControllerHolder

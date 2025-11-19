@@ -47,5 +47,15 @@ namespace Game.Gameplay.CameraSystem
             m_orbitalFollow.VerticalAxis.Value -= m_sensivities.y * m_lookAroundInput.y * Time.deltaTime;
             m_orbitalFollow.VerticalAxis.Validate();
         }
+        
+        public void ActivateCamera()
+        {
+            CameraAnchor.gameObject.SetActive(true);
+        }
+
+        public void DeactivateCamera()
+        {
+            CameraAnchor.gameObject.SetActive(false);
+        }
     }
 }

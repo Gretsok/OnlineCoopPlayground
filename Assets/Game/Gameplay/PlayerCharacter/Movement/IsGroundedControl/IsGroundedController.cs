@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Game.Gameplay.PlayerCharacter.Movement
+namespace Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl
 {
     public class IsGroundedController : NetworkBehaviour
     {

@@ -18,9 +18,17 @@ namespace Game.Gameplay.VehiclesSystem
             
             Vehicle = a_vehicle;
             PassengerController = a_passengerController;
-            
+
             if (Vehicle)
-                m_cameraController.AssignCameraTarget(Vehicle.transform);
+            {
+                Vehicle.LocalCameraController.ActivateCamera();
+                m_cameraController.DeactivateCamera();
+            }
+            else
+            {
+                m_cameraController.ActivateCamera();
+                Vehicle.LocalCameraController.DeactivateCamera();
+            }
         }
         
         protected override void HandleActivation()
@@ -44,7 +52,7 @@ namespace Game.Gameplay.VehiclesSystem
         protected override void UpdateInput()
         {
             base.UpdateInput();
-            if (!Vehicle)
+            if (!PassengerController)
                 return;
 
             var moveInput = Actions.Movement.Move.ReadValue<Vector2>();
@@ -52,6 +60,8 @@ namespace Game.Gameplay.VehiclesSystem
 
             var forward = m_cameraController.CameraAnchor.transform.forward.Flatten().normalized;
             var right = Vector3.Cross(Vector3.up, forward).normalized;
+            
+            PassengerController.SetDirection_ForOwner(moveInput);
             //AssignedMotor.MovementController.Blackboard.SetDirectionInput(moveInput.x * right + moveInput.y * forward);
             
             m_cameraController.SetLookAroundInput(lookAroundInput);
