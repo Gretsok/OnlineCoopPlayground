@@ -98,7 +98,7 @@ namespace Game.Gameplay.VehiclesSystem
 
             if (a_vehiclePassengerController != this)
                 return;
-            
+            a_vehicle.LocalCameraController.DeactivateCamera();
             m_currentVehicle.Value = null;
             a_vehicle.OnCharacterKicked_ServerCalled -= HandleCharacterKicked_ServerCalled;
             

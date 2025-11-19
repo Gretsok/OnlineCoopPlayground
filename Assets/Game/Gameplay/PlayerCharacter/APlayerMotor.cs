@@ -68,8 +68,14 @@ namespace Game.Gameplay.PlayerCharacter
 
             PlayerCharacterPawn.NetworkObject.TrySetParent(CharacterPawnAnchor);
 
+            HandleSetUpCustomLogic_ServerCalled();
             SetUpDependencies();
             m_hasBeenSetUp_ServerOnly = true;
+        }
+
+        protected virtual void HandleSetUpCustomLogic_ServerCalled()
+        {
+            
         }
 
         [Rpc(SendTo.Server)]

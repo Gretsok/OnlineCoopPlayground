@@ -1,9 +1,11 @@
+using DG.Tweening;
 using Game.Gameplay.GameplayInteractionsSystems.InteractionSystem;
 using Game.Gameplay.GameplayInteractionsSystems.SkillSystem;
 using Game.Gameplay.PlayerCharacter.FallingDamage;
 using Game.Gameplay.PlayerCharacter.Movement;
 using Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl;
 using Game.Gameplay.PlayerCharacter.SkillsIntegration;
+using Tools.Utils;
 using UnityEngine;
 
 namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
@@ -37,6 +39,21 @@ namespace Game.Gameplay.PlayerCharacter.MotorImplementations.Default
         [field: SerializeField]
         public FallingDamageHandler FallingDamageHandler { get; private set; }
 
+
+        protected override void HandleSetUpCustomLogic_ServerCalled()
+        {
+            base.HandleSetUpCustomLogic_ServerCalled();
+
+            // Getting up if the character does not stand up.
+            if (Vector3.Angle(Vector3.up, transform.up) > 20f)
+            {
+                var planarForward = transform.forward.Flatten();
+                if (planarForward.sqrMagnitude == 0)
+                    planarForward = transform.up.Flatten();
+
+                transform.DORotateQuaternion(Quaternion.LookRotation(planarForward, Vector3.up), 0.5f).SetEase(Ease.InOutQuint);
+            }
+        }
 
         protected override void SetUpDependencies()
         {

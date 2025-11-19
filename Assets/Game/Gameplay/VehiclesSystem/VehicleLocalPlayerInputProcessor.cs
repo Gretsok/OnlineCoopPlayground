@@ -27,7 +27,7 @@ namespace Game.Gameplay.VehiclesSystem
             else
             {
                 m_cameraController.ActivateCamera();
-                Vehicle.LocalCameraController.DeactivateCamera();
+                // Camera deactivated in VehiclePassengerController
             }
         }
         
