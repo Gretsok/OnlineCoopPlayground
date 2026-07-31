@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.AppUI.Core;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl
         {
             public Vector3 RelativePosition;
             public float Depth;
+            public LayerMask LayerMask;
         }
 
         private readonly NetworkVariable<bool> m_isGrounded =
@@ -24,6 +26,8 @@ namespace Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl
         public event Action<IsGroundedController> OnGroundLeft_OwnerCalled;
         public event Action<IsGroundedController> OnGroundLeft_ServerCalled;
         public event Action<IsGroundedController> OnGroundLeft_ClientsCalled;
+        
+        public Vector3 LastGroundPoint_OwnerOnly { get; private set; }
         
         
         [SerializeField]
@@ -51,9 +55,10 @@ namespace Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl
                 var worldPosition = m_relativeSource.TransformPoint(data.RelativePosition);
 
                 if (Physics.Raycast(worldPosition + Vector3.up * 0.05f, Vector3.down, out RaycastHit raycastHit,
-                        data.Depth + 0.05f))
+                        data.Depth + 0.05f, data.LayerMask))
                 {
                     isGrounded = true;
+                    LastGroundPoint_OwnerOnly = raycastHit.point;
                     break;
                 }
             }

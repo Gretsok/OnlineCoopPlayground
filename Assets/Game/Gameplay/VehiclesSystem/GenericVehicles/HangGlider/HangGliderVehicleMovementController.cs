@@ -1,6 +1,7 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
 using System.Linq;
+using Game.Gameplay.PlayerCharacter.Movement.IsGroundedControl;
 using Tools.Utils;
 using Unity.Netcode.Components;
 
@@ -10,18 +11,45 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
     public class HangGliderVehicleMovementController : NetworkBehaviour
     {
         private NetworkObject m_model;
+
+        [Header("Grounded mode")]
+        [SerializeField]
+        private float m_heightFromTheGroundWhenGrounded = 1.8f;
+
+        [SerializeField]
+        private float m_groundedHeightSetterRoughness = 18f;
+        [SerializeField]
+        private float m_groundedRotationSetterRoughness = 18f;
+
+        [SerializeField]
+        private float m_groundedWalkMaxSpeed = 7f;
+        [SerializeField]
+        private float m_groundedWalkAccelerationPerUser = 3f;
+        [SerializeField]
+        private float m_groundedRotationSpeedPerUser = 30f;
+
+        [SerializeField]
+        private float m_groundedNoInputDeceleration = 1f;
+        [SerializeField]
+        private float m_groundedWalkDecelerationPerUser = 3f;
         
+        [Header("In fly mode")]
         [SerializeField]
         private Vector2 m_sensivities = new Vector2(10f, 5f);
         private VehicleSeatsController m_seatsController;
         private Rigidbody m_rigidbody;
 
+        private IsGroundedController m_frontIsGroundedController;
+        
         public void SetDependencies(VehicleSeatsController a_seatsController, Rigidbody a_rigidbody,
-            NetworkObject a_model)
+            NetworkObject a_model,
+            IsGroundedController a_frontIsGroundedController)
         {
             m_seatsController = a_seatsController;
             m_rigidbody = a_rigidbody;
             m_model = a_model;
+            
+            m_frontIsGroundedController = a_frontIsGroundedController;
         }
         
         [SerializeField]
@@ -29,8 +57,9 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
         
         public enum EState
         {
-            Grounded = 0,
-            Flight = 1
+            Empty = 0,
+            Flight = 1,
+            Grounded = 2,
         }
         
         private readonly NetworkVariable<EState> m_state = new();
@@ -44,18 +73,41 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
         protected override void OnNetworkPostSpawn()
         {
             base.OnNetworkPostSpawn();
+            
+            // Let it as grounded so it automatically switch to empty mode to be properly initialized. We could use a better mean later.
             m_state.Value = EState.Grounded;
         }
 
+        public void ActivateEmptyMode()
+        {
+            if (m_state.Value == EState.Empty)
+                return;
+            m_state.Value = EState.Empty;
+
+            m_rigidbody.useGravity = true;
+            m_rigidbody.excludeLayers &= ~LayerMask.GetMask("PlayerCharacter");
+        }
+        
         public void ActivateFlightMode()
         {
+            if (m_state.Value == EState.Flight)
+                return;
             m_state.Value = EState.Flight;
+            
+            m_rigidbody.useGravity = false;
+            m_rigidbody.excludeLayers &= LayerMask.GetMask("PlayerCharacter");
         }
 
         public void ActivateGroundMode()
         {
+            if (m_state.Value == EState.Grounded)
+                return;
             m_state.Value = EState.Grounded;
+            
+            m_rigidbody.useGravity = false;
+            m_rigidbody.excludeLayers &= LayerMask.GetMask("PlayerCharacter");
         }
+
         
         private void FixedUpdate()
         {
@@ -63,34 +115,108 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
                 return;
             if (!m_seatsController)
                 return;
-
-            if (m_seatsController.SeatInfos_ServerOnly.Count(a_seat => a_seat.Passenger != null) == 0)
-            {
-                if (m_state.Value != EState.Grounded)
-                    m_state.Value = EState.Grounded;
-            }
-            else
-            {
-                if (m_state.Value != EState.Flight)
-                    m_state.Value = EState.Flight;
-            }
-
+            
+            UpdateCurrentState();
+            
             if (m_state.Value == EState.Grounded)
             {
-                UpdateGroundedMode();
+                UpdateGroundedMode_ServerOnly();
+            }
+            else if (m_state.Value == EState.Flight)
+            {
+                UpdateFlightMode_ServerOnly();
             }
             else
             {
-                UpdateFlightMode();
+                UpdateEmptyMode_ServerOnly();
             }
         }
 
-        private void UpdateGroundedMode()
+
+        private void UpdateCurrentState()
+        {
+            if (m_seatsController.SeatInfos_ServerOnly.Count(a_seat => a_seat.Passenger != null) == 0)
+            {
+                ActivateEmptyMode();
+            }
+            else if (m_frontIsGroundedController.IsGrounded)
+            {
+                ActivateGroundMode();
+            }
+            else
+            {
+                ActivateFlightMode();
+            }
+        }
+
+        
+        private void UpdateEmptyMode_ServerOnly()
         {
             
         }
         
-        private void UpdateFlightMode()
+        private void UpdateGroundedMode_ServerOnly()
+        {
+            // It is owner only, but the server should be the owner.
+            var groundPoint = m_frontIsGroundedController.LastGroundPoint_OwnerOnly;
+            
+            var targetPoint = m_rigidbody.transform.position.Flatten(groundPoint.y + m_heightFromTheGroundWhenGrounded);
+            
+            m_rigidbody.transform.position = Vector3.Lerp(m_rigidbody.transform.position, targetPoint, m_groundedHeightSetterRoughness * Time.deltaTime);
+            var flattenForward = m_rigidbody.transform.forward.Flatten();
+            if (flattenForward.sqrMagnitude == 0)
+                flattenForward = m_rigidbody.transform.up;
+            m_rigidbody.transform.rotation = Quaternion.Lerp(m_rigidbody.transform.rotation, Quaternion.LookRotation(m_rigidbody.transform.forward.Flatten(), Vector3.up), m_groundedRotationSetterRoughness * Time.deltaTime);
+            m_model.transform.localRotation = Quaternion.Lerp(m_model.transform.localRotation, Quaternion.identity, m_groundedRotationSetterRoughness * Time.deltaTime);
+
+            Vector2 totalDirectionInput = default;
+            for (int i = 0; i < m_seatsController.MaximumSeats; ++i)
+            {
+                var seat = m_seatsController.SeatInfos_ServerOnly[i];
+
+                if (!seat.Passenger)
+                    continue;
+
+                var directionInput = seat.Passenger.VehiclePassengerController.DirectionInput;
+
+                totalDirectionInput += new Vector2(directionInput.x, directionInput.y);
+                 
+            }
+            
+            m_rigidbody.transform.rotation = Quaternion.RotateTowards(m_rigidbody.transform.rotation, Quaternion.LookRotation(m_rigidbody.transform.right, m_rigidbody.transform.up),
+                Time.deltaTime * m_groundedRotationSpeedPerUser * totalDirectionInput.x);
+
+            var forwardSpeed = m_rigidbody.linearVelocity.magnitude;
+            
+            if (totalDirectionInput.y > 0f)
+            {
+                forwardSpeed +=
+                    m_groundedWalkAccelerationPerUser * Time.deltaTime;
+            }
+            else
+            {
+                var deltaDeceleration = -m_groundedNoInputDeceleration * Time.deltaTime;
+                if (totalDirectionInput.y < 0f)
+                {
+                    deltaDeceleration -= 
+                        -totalDirectionInput.y * m_groundedWalkDecelerationPerUser * Time.deltaTime;
+                }
+
+                if (deltaDeceleration >= m_rigidbody.linearVelocity.magnitude)
+                    m_rigidbody.linearVelocity = Vector3.zero;
+                forwardSpeed += deltaDeceleration;
+            }
+            
+            
+            if (forwardSpeed > m_groundedWalkMaxSpeed)
+            {
+                forwardSpeed = m_groundedWalkMaxSpeed;
+            }
+            
+            m_rigidbody.linearVelocity = m_rigidbody.transform.forward * forwardSpeed;
+        }
+        
+        private void UpdateFlightMode_ServerOnly()
         {
             // We get the forward speed by subtracting down speed from velocity.
             m_forwardSpeed.Value = new Vector3(m_rigidbody.linearVelocity.x, Mathf.Min(0f, m_rigidbody.linearVelocity.y + m_movementDataAsset.DownSpeedWhenStabilized), m_rigidbody.linearVelocity.z).magnitude;
@@ -103,7 +229,6 @@ namespace Game.Gameplay.VehiclesSystem.GenericVehicles.HangGlider
                     continue;
 
                 var directionInput = seat.Passenger.VehiclePassengerController.DirectionInput;
-
                 
                 var targetHorizontalValue = Mathf.Clamp01(m_horizontalValue.Value + directionInput.x * m_sensivities.x * Time.deltaTime);
                 var targetVerticalValue = Mathf.Clamp01(m_verticalValue.Value + directionInput.y * m_sensivities.y * Time.deltaTime);

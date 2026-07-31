@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4489732073882049637}
   - component: {fileID: 1975212492111254618}
   - component: {fileID: 3417635837757266387}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: VehiclePlayerMotor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1410603915
+  GlobalObjectIdHash: 1064810321
   InScenePlacedSourceGlobalObjectIdHash: 353706981
   DeferredDespawnTick: 0
   Ownership: 1

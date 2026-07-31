@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using Game.Gameplay.PlayerCharacter;
 using Game.Gameplay.PlayerCharacter.CharacterImplementations;
 using Game.Gameplay.PlayerCharacter.MotorImplementations.Default;
-using Game.Gameplay.VehiclesSystem;
 using Game.Gameplay.VehiclesSystem.PlayerMotor;
 using Game.Networking;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Gameplay.CharactersManagement
 {

@@ -58,6 +58,7 @@ namespace Game.MainMenu.Orchestration.Connecting.IPConnection
             {
                 connectionData.Port = portToUse;
             }
+            connectionData.ServerListenAddress = m_addressField.text;
             m_networkManager.GetComponent<UnityTransport>().ConnectionData = connectionData;
         }
         
